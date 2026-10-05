@@ -12,13 +12,27 @@ public class ProgramaContatos {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== Sistema de Gerenciamento de Contatos ===");
-        // Pergunta inicial se as listas devem ser ordenadas ou nao
-        System.out.print("Deseja que as listas sejam ordenadas? (1 - Sim / 2 - Nao): ");
-        boolean isOrdenada = scanner.nextLine().trim().equals("1");
+        
+        // --- ALTERAÇÃO PARA O TRABALHO 2: Menu de escolha de estrutura ---
+        System.out.println("Escolha a estrutura de dados que deseja instanciar:");
+        System.out.println("1 - Lista Nao-Ordenada");
+        System.out.println("2 - Lista Ordenada");
+        System.out.println("3 - Arvore Binaria");
+        System.out.print("Opcao: ");
+        
+        int escolhaEstrutura = 1; // Padrão de segurança
+        try {
+            escolhaEstrutura = Integer.parseInt(scanner.nextLine().trim());
+            if (escolhaEstrutura < 1 || escolhaEstrutura > 3) {
+                System.out.println("Opcao invalida. Usando Lista Nao-Ordenada por padrao.");
+                escolhaEstrutura = 1;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Opcao invalida. Usando Lista Nao-Ordenada por padrao.");
+        }
 
-        // Instancia as duas listas como IColecao para nome e telefone
-        // Mesma referencia compartilhada entre as listas (sem duplicar objetos em memoria)
-        CadastroContatos cadastro = new CadastroContatos(isOrdenada);
+        // Instancia as duas estruturas delegando a decisão para o CadastroContatos
+        CadastroContatos cadastro = new CadastroContatos(escolhaEstrutura);
         IColecao<Contato> listaPorNome = cadastro.porNome();
         IColecao<Contato> listaPorTelefone = cadastro.porTelefone();
 
@@ -135,13 +149,14 @@ public class ProgramaContatos {
                     inicioTempo = System.nanoTime();
                     boolean removido = listaPorTelefone.remover(contatoBusca);
                     fimTempo = System.nanoTime();
+                    
                     if (removido) {
                         cadastro.removerPorNome(contatoEncontrado);
                         System.out.println("Contato (" + contatoEncontrado + ") excluido com sucesso.");
                     } else {
                         System.out.println("Contato nao existia.");
                     }
-                    System.out.printf("Tempo de remover na lista por telefone: %.4f ms\n", (fimTempo - inicioTempo) / 1_000_000.0);
+                    System.out.printf("Tempo de remover na estrutura por telefone: %.4f ms\n", (fimTempo - inicioTempo) / 1_000_000.0);
                     break;
 
                 case 6:
@@ -171,7 +186,7 @@ public class ProgramaContatos {
                         if (verificaTelefone != null && !verificaTelefone.equals(contatoEncontrado)) {
                             System.out.println("Erro: O novo telefone ja pertence a outro contato!");
                         } else {
-                            // Para manter a integridade da ordem nas listas encadeadas, removemos o antigo e adicionamos o novo
+                            // Para manter a integridade, removemos o antigo e adicionamos o novo
                             cadastro.remover(contatoEncontrado);
                             cadastro.adicionar(contatoAlterado);
 
