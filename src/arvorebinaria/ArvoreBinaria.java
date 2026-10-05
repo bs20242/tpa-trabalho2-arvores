@@ -14,47 +14,6 @@ public class ArvoreBinaria<T> extends ArvoreBinariaBase<T> {
     public ArvoreBinaria(Comparator<T> comparador) {
         super(Objects.requireNonNull(comparador));
     }
-    // Variavel de apoio para o removerReferencia
-    private boolean removidoReferencia;
-
-    // Método exclusivo para remover a mesma instância de memória (resolve o bug dos homônimos)
-    public boolean removerReferencia(T valor) {
-        if (valor == null) return false;
-        removidoReferencia = false;
-        raiz = removerReferenciaRecursivo(raiz, valor);
-        return removidoReferencia;
-    }
-
-    private NoArvore<T> removerReferenciaRecursivo(NoArvore<T> no, T valor) {
-        if (no == null) return null;
-
-        int comp = comparador.compare(valor, no.getValor());
-        
-        if (comp < 0) {
-            no.setEsquerda(removerReferenciaRecursivo(no.getEsquerda(), valor));
-        } else if (comp > 0) {
-            no.setDireita(removerReferenciaRecursivo(no.getDireita(), valor));
-        } else {
-            // Os valores são iguais para o comparador (Homônimos). 
-            // Mas é o MESMO objeto na memória?
-            if (no.getValor() == valor) {
-                removidoReferencia = true;
-                
-                if (no.getEsquerda() == null) return no.getDireita();
-                if (no.getDireita() == null) return no.getEsquerda();
-
-                NoArvore<T> sucessor = no.getDireita();
-                while (sucessor.getEsquerda() != null) sucessor = sucessor.getEsquerda();
-                no.setValor(sucessor.getValor());
-                no.setDireita(removerReferenciaRecursivo(no.getDireita(), sucessor.getValor()));
-            } else {
-                // É homônimo, mas não é a pessoa certa. 
-                // Como elementos iguais vão para a direita na inserção, continuamos buscando na direita!
-                no.setDireita(removerReferenciaRecursivo(no.getDireita(), valor));
-            }
-        }
-        return no;
-    }
 
     @Override
     public boolean adicionar(T valor) {

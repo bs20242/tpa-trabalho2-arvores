@@ -16,7 +16,7 @@ Os arquivos de listas e contatos foram trazidos do [repositório entregue no tra
 - `src/app/ProgramaContatos.java`: aplicativo original de contatos.
 - `src/testes/TesteLista.java`, `TesteCadastro.java`, `GeradorDadosContatos.java` e `BenchmarkListas.java`: testes e ferramentas do trabalho anterior.
 
-O aplicativo trazido do trabalho 1 ainda escolhe somente entre listas ordenadas e não ordenadas. A parte 2 deve acrescentar a escolha por árvore e adaptar a criação das duas coleções. Os métodos auxiliares de `CadastroContatos` que fazem conversão para `ListaEncadeada` também precisam aceitar árvores, especialmente a remoção por referência quando existem nomes iguais.
+O aplicativo permite escolher entre lista não ordenada (1), lista ordenada (2) e árvore binária (3). `CadastroContatos` cria os dois índices na estrutura escolhida e remove por referência no índice de nomes, preservando outros contatos com nomes iguais. O construtor com `boolean` continua disponível para os testes e o benchmark de listas do trabalho anterior.
 
 Depois de compilar, o aplicativo original pode ser executado com:
 
