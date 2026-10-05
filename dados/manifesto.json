@@ -1,0 +1,34 @@
+{
+  "perfeita_2047.txt": {
+    "registros": 2047,
+    "sha256": "174adf7d1199d9abc2258001d25ae26ba9d8ae0f140eb03596283deef1078fc4"
+  },
+  "degenerada_2047.txt": {
+    "registros": 2047,
+    "sha256": "9fe0bcfcd12774ca4a6d0f0894dc34ded7d8e547ba0429154757262acdb9f22f"
+  },
+  "perfeita_4095.txt": {
+    "registros": 4095,
+    "sha256": "cff44db56f399cb7aeacb3c3d196f3a6c378d986a3b67d08fb18252ac5f7fb44"
+  },
+  "degenerada_4095.txt": {
+    "registros": 4095,
+    "sha256": "f1c2cf88011822e284ff1ba3219318c98e70ad74b39ec8308afd5a2158f84e7d"
+  },
+  "perfeita_8191.txt": {
+    "registros": 8191,
+    "sha256": "fad5acd7f86353a569410e07a3bcb581f6d7e04851f5515712e479de75d401c3"
+  },
+  "degenerada_8191.txt": {
+    "registros": 8191,
+    "sha256": "b5047edf6d0570ce1ab9f0709e180b8e7312f539fe78834650809214b4ebacf2"
+  },
+  "perfeita_16383.txt": {
+    "registros": 16383,
+    "sha256": "1b19cdd46a719a635ec8de129f1e0e6172f8877d21f0887a3ea7b58e467cd9d1"
+  },
+  "degenerada_16383.txt": {
+    "registros": 16383,
+    "sha256": "cbcb62f74dad8f9792a72f9a043fac10a5de00fc9a950e5e3c598309cd68d72d"
+  }
+}

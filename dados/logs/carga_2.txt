@@ -1,0 +1,50 @@
+=== Sistema de Gerenciamento de Contatos ===
+Escolha a estrutura de dados que deseja instanciar:
+1 - Lista Nao-Ordenada
+2 - Lista Ordenada
+3 - Arvore Binaria
+Opcao: 
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o caminho do arquivo (Enter para 'entrada.txt'): 2047 contatos carregados com sucesso!
+Tempo total de leitura e montagem das listas: 138,4484 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o telefone a pesquisar: Contato encontrado: Contato 002047 - 00000002047
+Nome: Contato 002047
+Tempo gasto na busca: 0,1818 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o telefone do contato a remover: Contato (Contato 002047 - 00000002047) excluido com sucesso.
+Tempo de remover na estrutura por telefone: 0,1758 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Encerrando o programa...
+Quantidade total atual de contatos: 2046

@@ -1,0 +1,125 @@
+=== Sistema de Gerenciamento de Contatos ===
+Escolha a estrutura de dados que deseja instanciar:
+1 - Lista Nao-Ordenada
+2 - Lista Ordenada
+3 - Arvore Binaria
+Opcao: 
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Nome do contato: Telefone do contato: Contato adicionado com sucesso!
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Nome do contato: Telefone do contato: Contato adicionado com sucesso!
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Nome do contato: Telefone do contato: Erro: Ja existe um contato cadastrado com esse telefone!
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o telefone do contato a remover: Contato (Ana - 222) excluido com sucesso.
+Tempo de remover na estrutura por telefone: 0,0028 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o nome a pesquisar: Contato encontrado: Ana - 111
+Telefone: 111
+Tempo gasto na busca: 0,0029 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Nome do contato: Telefone do contato: Contato adicionado com sucesso!
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o nome do contato a alterar: Contato atual encontrado: Ana - 111
+Novo nome: Novo telefone: Dados alterados com sucesso para: Clara - 333
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o telefone a pesquisar: Contato nao existe.
+Tempo gasto na busca: 0,0018 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o telefone a pesquisar: Contato encontrado: Clara - 333
+Nome: Clara
+Tempo gasto na busca: 0,0025 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Digite o nome a pesquisar: Contato encontrado: Bia - 222
+Telefone: 222
+Tempo gasto na busca: 0,0020 ms
+
+--- MENU PRINCIPAL ---
+1 - Carregar dados de arquivo
+2 - Adicionar contato
+3 - Pesquisar contato por nome
+4 - Pesquisar contato por telefone
+5 - Remover contato por telefone
+6 - Alterar dados de contato
+7 - Sair
+Escolha uma opcao: Encerrando o programa...
+Quantidade total atual de contatos: 2

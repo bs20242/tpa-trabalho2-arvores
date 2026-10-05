@@ -1,0 +1,12 @@
+{
+  "fuso": "America/Sao_Paulo",
+  "repeticoes": 3,
+  "data": "2026-10-05",
+  "aquecimento": "10 cargas de 2047 contatos e buscas fora dos intervalos medidos",
+  "heap": "-Xms256m -Xmx1024m",
+  "processador": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
+  "java": "Corretto 21.0.6",
+  "ramGB": 31.9,
+  "sistema": "Windows",
+  "commitBase": "47dda74"
+}

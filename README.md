@@ -2,7 +2,7 @@
 
 Técnicas de Programação Avançada - IFES, Campus Serra.
 
-Esta primeira contribuição contém o **item 1: desenvolvimento da biblioteca de árvores binárias**. Ela serve de base para a entrega parcial com as três primeiras seções do relatório sobre árvores sem balanceamento automático.
+O projeto contém a biblioteca de árvores binárias, o aplicativo de contatos com três estruturas e os itens 3, 4 e 5: relatório parcial, análise matemática e experimentos de árvores sem balanceamento automático.
 
 Grupo: Bernardo Simão Rosa, Matheus Abreu e Levi Monteiro.
 
@@ -42,6 +42,8 @@ Métodos exigidos pelo enunciado:
 | `toString` | Usa o caminhamento em ordem herdado da classe base. |
 
 A inserção e a busca seguem a regra apresentada nas aulas: menor à esquerda, maior ou igual à direita. Ao remover um nó com dois filhos, seu valor é substituído pelo menor da subárvore direita. O sucessor é então desligado, preservando seu possível filho direito. Essa é uma das opções apresentadas nos slides.
+
+Na lista encadeada, `quantidadeNos()` retorna um campo atualizado pelas inserções e remoções, com custo O(1). Na árvore, esse método mantém o percurso O(n) descrito na tabela e no relatório.
 
 Os percursos usam laços, pilha ou fila explícita para funcionar também em árvores degeneradas profundas. A biblioteca não realiza rotações; a ordem da entrada determina o formato da árvore. Valores nulos não são inseridos. Chaves iguais são permitidas, e a busca ou remoção por chave atua sobre uma ocorrência.
 
@@ -83,6 +85,7 @@ README.md
 java -cp bin testes.TesteArvore
 java -ea -cp bin testes.TesteLista
 java -ea -cp bin testes.TesteCadastro
+java -ea -cp bin testes.TesteContadorLista
 ```
 
 O script usa `JAVA_HOME`, quando definido, ou o `javac` disponível no PATH. Para compilar manualmente:
@@ -112,6 +115,6 @@ Para contatos com nomes iguais, a biblioteca também oferece `removerReferencia(
 
 Para os experimentos, `folhaMaisDistante()` retorna uma folha no nível mais profundo; em empate, retorna a última no percurso em nível. `profundidade(valor)` retorna o nível da primeira ocorrência da chave, ou `-1` quando ela não existe. A escolha do alvo e a medição da altura devem ficar fora do intervalo cronometrado de busca ou remoção.
 
-## Acrescentar as próximas partes
+## Relatório e experimentos
 
-Os próximos commits podem adaptar o aplicativo, integrar os programas de medição das árvores e acrescentar o relatório parcial. Usem os pacotes existentes para manter a compatibilidade com `IColecao` e `ArvoreBinariaBase`. Para contribuir, clonem o repositório, façam suas alterações e enviem uma branch com pull request; isso permite revisar cada contribuição antes de juntá-la à principal.
+O relatório está em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`, com texto editável em `docs/Relatorio_Parcial.md`. `GeradorDadosArvores` gera os oito arquivos exigidos para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário com medições documentadas na pasta `dados`.
