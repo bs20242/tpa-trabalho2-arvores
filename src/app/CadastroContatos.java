@@ -2,6 +2,7 @@ package app;
 
 import colecao.IColecao;
 import colecao.ListaEncadeada;
+import arvorebinaria.ArvoreBinaria;
 import dominio.Contato;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,25 +12,56 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-// Regras usadas tanto pelo menu quanto pelo benchmark, sem imprimir mensagens.
 public class CadastroContatos {
     private final IColecao<Contato> porNome;
     private final IColecao<Contato> porTelefone;
     private final Set<String> telefones;
+    private final int tipoEstrutura; 
 
+    // SOLUÇÃO DA QUEBRA DE COMPATIBILIDADE: 
     public CadastroContatos(boolean ordenada) {
-        porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), ordenada);
-        porTelefone = new ListaEncadeada<>(new Contato.ComparadorPorTelefone(), ordenada);
-        telefones = new HashSet<>();
+        this(ordenada ? 2 : 1);
+    }
+
+    // SOLUÇÃO DO ERRO DO FINAL:
+    // A validação é feita de forma limpa na atribuição.
+    public CadastroContatos(int tipoEscolhido) {
+        this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 3) ? tipoEscolhido : 1;
+        this.telefones = new HashSet<>();
+
+        switch (this.tipoEstrutura) {
+            case 1:
+                porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), false);
+                porTelefone = new ListaEncadeada<>(new Contato.ComparadorPorTelefone(), false);
+                break;
+            case 2:
+                porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), true);
+                porTelefone = new ListaEncadeada<>(new Contato.ComparadorPorTelefone(), true);
+                break;
+            case 3:
+                porNome = new ArvoreBinaria<>(new Contato.ComparadorPorNome());
+                porTelefone = new ArvoreBinaria<>(new Contato.ComparadorPorTelefone());
+                break;
+            default:
+                porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), false);
+                porTelefone = new ListaEncadeada<>(new Contato.ComparadorPorTelefone(), false);
+                break;
+        }
     }
 
     public IColecao<Contato> porNome() { return porNome; }
     public IColecao<Contato> porTelefone() { return porTelefone; }
 
-    // As listas foram criadas neste construtor; o cast acessa apenas metodos auxiliares.
-    // IColecao permanece igual a interface fornecida na disciplina.
     public boolean removerPorNome(Contato contato) {
-        boolean r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
+        boolean r = false;
+        
+        // SOLUÇÃO DA REMOÇÃO INCOMPLETA DA ÁRVORE:
+        if (tipoEstrutura == 1 || tipoEstrutura == 2) {
+            r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
+        } else if (tipoEstrutura == 3) {
+            r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato); 
+        }
+
         if (r && contato != null && contato.getTelefone() != null) {
             telefones.remove(contato.getTelefone());
         }
@@ -37,11 +69,17 @@ public class CadastroContatos {
     }
 
     public Contato ultimoPorNome() {
-        return ((ListaEncadeada<Contato>) porNome).obterUltimo();
+        if (tipoEstrutura == 1 || tipoEstrutura == 2) {
+            return ((ListaEncadeada<Contato>) porNome).obterUltimo();
+        }
+        return null;
     }
 
     public Contato ultimoPorTelefone() {
-        return ((ListaEncadeada<Contato>) porTelefone).obterUltimo();
+        if (tipoEstrutura == 1 || tipoEstrutura == 2) {
+            return ((ListaEncadeada<Contato>) porTelefone).obterUltimo();
+        }
+        return null;
     }
 
     public boolean adicionar(Contato contato) {
@@ -75,7 +113,6 @@ public class CadastroContatos {
         return total;
     }
 
-    // O contato foi localizado antes desta chamada. Remove a mesma pessoa das duas listas.
     public boolean remover(Contato contato) {
         if (!removerPorNome(contato)) {
             return false;
@@ -83,7 +120,6 @@ public class CadastroContatos {
         if (!porTelefone.remover(contato)) {
             throw new IllegalStateException("Listas inconsistentes");
         }
-        telefones.remove(contato.getTelefone());
         return true;
     }
 }
