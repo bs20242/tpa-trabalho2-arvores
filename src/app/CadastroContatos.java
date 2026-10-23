@@ -18,13 +18,11 @@ public class CadastroContatos {
     private final Set<String> telefones;
     private final int tipoEstrutura; 
 
-    // SOLUÇÃO DA QUEBRA DE COMPATIBILIDADE: 
+    // true seleciona lista ordenada; false, lista nao ordenada.
     public CadastroContatos(boolean ordenada) {
         this(ordenada ? 2 : 1);
     }
 
-    // SOLUÇÃO DO ERRO DO FINAL:
-    // A validação é feita de forma limpa na atribuição.
     public CadastroContatos(int tipoEscolhido) {
         this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 3) ? tipoEscolhido : 1;
         this.telefones = new HashSet<>();
@@ -55,7 +53,7 @@ public class CadastroContatos {
     public boolean removerPorNome(Contato contato) {
         boolean r = false;
         
-        // SOLUÇÃO DA REMOÇÃO INCOMPLETA DA ÁRVORE:
+        // Remove o mesmo contato, mesmo quando ha nomes iguais.
         if (tipoEstrutura == 1 || tipoEstrutura == 2) {
             r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
         } else if (tipoEstrutura == 3) {
