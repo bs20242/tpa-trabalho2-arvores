@@ -13,14 +13,13 @@ public class ProgramaContatos {
 
         System.out.println("=== Sistema de Gerenciamento de Contatos ===");
         
-        // --- ALTERAÇÃO PARA O TRABALHO 2: Menu de escolha de estrutura ---
         System.out.println("Escolha a estrutura de dados que deseja instanciar:");
         System.out.println("1 - Lista Nao-Ordenada");
         System.out.println("2 - Lista Ordenada");
         System.out.println("3 - Arvore Binaria");
         System.out.print("Opcao: ");
         
-        int escolhaEstrutura = 1; // Padrão de segurança
+        int escolhaEstrutura = 1; // Lista nao ordenada por padrao.
         try {
             escolhaEstrutura = Integer.parseInt(scanner.nextLine().trim());
             if (escolhaEstrutura < 1 || escolhaEstrutura > 3) {

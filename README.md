@@ -119,7 +119,7 @@ javac -encoding UTF-8 -Xlint:all -d bin $fontes
 java -cp bin testes.TesteArvore
 ```
 
-Os testes verificam árvores vazias, percursos, remoção de folhas e raízes, remoção com um ou dois filhos, sucessor com filho, nomes iguais, comparadores diferentes e cadeia com 10.000 nós. Também comparam 10.000 operações aleatórias com um modelo de referência, incluindo chaves repetidas. Ao terminar, imprimem `OK` com a quantidade de verificações.
+`TesteArvore` verifica árvores vazias, percursos, remoção de folhas e raízes, remoção com um ou dois filhos, sucessor com filho, nomes iguais, comparadores diferentes e cadeia com 10.000 nós. Também compara 10.000 operações aleatórias com um modelo de referência, incluindo chaves repetidas. Ao terminar, imprime `OK` com a quantidade de verificações.
 
 `TesteAVL` usa exemplos pequenos para verificar as quatro rotações na inserção e na remoção, o caso de filho com fator zero, altura, busca, percursos e remoções de folha, raiz e nós com um ou dois filhos. Também verifica chaves repetidas e a remoção do contato correto entre três pessoas com o mesmo nome.
 
@@ -140,7 +140,7 @@ Para contatos com nomes iguais, a biblioteca também oferece `removerReferencia(
 
 Para os experimentos, `folhaMaisDistante()` retorna uma folha no nível mais profundo; em empate, retorna a última no percurso em nível. `profundidade(valor)` retorna o nível da primeira ocorrência da chave, ou `-1` quando ela não existe. A escolha do alvo e a medição da altura devem ficar fora do intervalo cronometrado de busca ou remoção.
 
-### Integração da opção 4 — parte do Matheus
+### Integração da opção 4 — Árvore AVL
 
 A biblioteca pode ser instanciada da mesma forma:
 
