@@ -5,12 +5,12 @@ import java.util.Deque;
 import java.util.Objects;
 
 public class ArvoreBinaria<T> extends ArvoreBinariaBase<T> {
-    private static class No<T> {
+    protected static class No<T> {
         T valor;
         No<T> esq, dir;
         No(T valor) { this.valor = valor; }
     }
-    private No<T> raiz;
+    protected No<T> raiz;
     public ArvoreBinaria(Comparator<T> comparador) {
         super(Objects.requireNonNull(comparador));
     }
