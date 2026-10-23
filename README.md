@@ -121,7 +121,7 @@ java -cp bin testes.TesteArvore
 
 Os testes verificam árvores vazias, percursos, remoção de folhas e raízes, remoção com um ou dois filhos, sucessor com filho, nomes iguais, comparadores diferentes e cadeia com 10.000 nós. Também comparam 10.000 operações aleatórias com um modelo de referência, incluindo chaves repetidas. Ao terminar, imprimem `OK` com a quantidade de verificações.
 
-`TesteAVL` verifica as quatro rotações na inserção e na remoção, incluindo o caso de filho com fator zero. Confere os 14.400 pares possíveis de ordens de inserção e remoção de cinco chaves, 6.000 operações aleatórias com repetições, dois índices com 255 contatos de mesmo nome e 2.000 operações por referência. Também executa 100.000 inserções crescentes e 100.000 remoções decrescentes. A inspeção dos nós recalcula as alturas para conferir o balanceamento e os valores armazenados, sem depender apenas de `altura()`.
+`TesteAVL` usa exemplos pequenos para verificar as quatro rotações na inserção e na remoção, o caso de filho com fator zero, altura, busca, percursos e remoções de folha, raiz e nós com um ou dois filhos. Também verifica chaves repetidas e a remoção do contato correto entre três pessoas com o mesmo nome.
 
 ## Usar a biblioteca no aplicativo
 
