@@ -2,7 +2,7 @@
 
 Técnicas de Programação Avançada - IFES, Campus Serra.
 
-O projeto contém as bibliotecas de árvore binária e AVL, o aplicativo de contatos com três opções e o relatório parcial de árvores sem balanceamento automático. A biblioteca AVL está pronta para a integração da quarta opção ao aplicativo, descrita abaixo.
+O projeto contém as bibliotecas de árvore binária e AVL, o aplicativo de contatos com quatro opções e o relatório parcial de árvores sem balanceamento automático.
 
 Grupo: Bernardo Simão Rosa, Matheus Abreu e Levi Monteiro.
 
@@ -16,7 +16,7 @@ Os arquivos de listas e contatos foram trazidos do [repositório entregue no tra
 - `src/app/ProgramaContatos.java`: menu e operações do aplicativo de contatos.
 - `src/testes/TesteLista.java`, `TesteCadastro.java`, `GeradorDadosContatos.java` e `BenchmarkListas.java`: testes e ferramentas do trabalho anterior.
 
-O aplicativo permite escolher entre lista não ordenada (1), lista ordenada (2) e árvore binária (3). `CadastroContatos` cria os dois índices na estrutura escolhida e remove por referência no índice de nomes, preservando outros contatos com nomes iguais. O construtor com `boolean` continua disponível para os testes e o benchmark de listas do trabalho anterior.
+O aplicativo permite escolher entre lista não ordenada (1), lista ordenada (2), árvore binária (3) e árvore AVL (4). `CadastroContatos` cria os dois índices na estrutura escolhida e remove por referência no índice de nomes, preservando outros contatos com nomes iguais. O construtor com `boolean` continua disponível para os testes e o benchmark de listas do trabalho anterior.
 
 Depois de compilar, o aplicativo pode ser executado com:
 
@@ -62,7 +62,7 @@ Chaves iguais são permitidas. A inserção começa procurando à direita em cas
 | `quantidadeNos`, percursos e `folhaMaisDistante` | O(n) |
 | `removerReferencia` | O(n) quando há muitas chaves iguais; O(log n) com chaves únicas |
 
-Esses custos consideram que cada comparação e a representação de cada valor têm custo constante. São a análise dos algoritmos; os experimentos da AVL ainda precisam ser feitos após sua integração ao aplicativo.
+Esses custos consideram que cada comparação e a representação de cada valor têm custo constante. Os experimentos da AVL ainda precisam ser realizados.
 
 ## Organização
 
@@ -142,7 +142,7 @@ Para os experimentos, `folhaMaisDistante()` retorna uma folha no nível mais pro
 
 ### Integração da opção 4 — Árvore AVL
 
-A biblioteca pode ser instanciada da mesma forma:
+A opção 4 já está integrada ao aplicativo. Em `CadastroContatos`, os dois índices são criados assim:
 
 ```java
 import arvorebinaria.ArvoreAVL;
@@ -152,12 +152,7 @@ porNome = new ArvoreAVL<>(new Contato.ComparadorPorNome());
 porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
 ```
 
-Para integrar ao aplicativo:
-
-1. Em `ProgramaContatos`, apresentar a opção `4 — Árvore AVL` e aceitar valores de 1 a 4 na escolha da estrutura.
-2. Em `CadastroContatos`, aceitar o tipo 4 e criar os dois índices com `ArvoreAVL` no novo `case 4`. Manter as opções anteriores e o construtor com `boolean`.
-3. Em `removerPorNome`, atender `tipoEstrutura == 3 || tipoEstrutura == 4` no ramo das árvores. O cast para `ArvoreBinaria<Contato>` pode continuar: a AVL é sua subclasse e executa sua própria remoção por referência. Manter a liberação do telefone no `HashSet` após a remoção.
-4. Ampliar os testes do cadastro para a opção 4: inclusão, busca, edição de nome, telefone duplicado, remoção entre nomes iguais e novo cadastro com o telefone removido. Conferir que as opções 1, 2 e 3 continuam funcionando.
+O menu e o cadastro aceitam valores de 1 a 4. A remoção por nome atende às duas opções de árvore e libera o telefone no `HashSet` após a exclusão. `TesteCadastro` verifica que a opção 4 cria árvores AVL nos dois índices.
 
 Os métodos `folhaMaisDistante` e `profundidade` também estão disponíveis na AVL. O benchmark deve escolher a folha mais distante no índice de telefone, buscar o mesmo contato por nome e removê-lo por telefone, usando os arquivos crescentes do experimento anterior, conforme o item 7.
 

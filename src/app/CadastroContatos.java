@@ -25,7 +25,7 @@ public class CadastroContatos {
     }
 
     public CadastroContatos(int tipoEscolhido) {
-        this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 3) ? tipoEscolhido : 1;
+        this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 4) ? tipoEscolhido : 1;
         this.telefones = new HashSet<>();
 
         switch (this.tipoEstrutura) {
