@@ -3,6 +3,7 @@ package app;
 import colecao.IColecao;
 import colecao.ListaEncadeada;
 import arvorebinaria.ArvoreBinaria;
+import arvorebinaria.ArvoreAVL;
 import dominio.Contato;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,6 +41,10 @@ public class CadastroContatos {
                 porNome = new ArvoreBinaria<>(new Contato.ComparadorPorNome());
                 porTelefone = new ArvoreBinaria<>(new Contato.ComparadorPorTelefone());
                 break;
+            case 4:
+                this.porNome = new ArvoreAVL<>(new Contato.ComparadorPorNome());
+                this.porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
+                break;
             default:
                 porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), false);
                 porTelefone = new ListaEncadeada<>(new Contato.ComparadorPorTelefone(), false);
@@ -56,7 +61,7 @@ public class CadastroContatos {
         // Remove o mesmo contato, mesmo quando ha nomes iguais.
         if (tipoEstrutura == 1 || tipoEstrutura == 2) {
             r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
-        } else if (tipoEstrutura == 3) {
+        } else if (tipoEstrutura == 3 || tipoEstrutura == 4) {
             r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato); 
         }
 
