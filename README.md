@@ -2,7 +2,7 @@
 
 Técnicas de Programação Avançada - IFES, Campus Serra.
 
-O projeto contém as bibliotecas de árvore binária e AVL, o aplicativo de contatos com quatro opções e o relatório parcial de árvores sem balanceamento automático.
+O projeto contém as bibliotecas de árvore binária e AVL, o aplicativo de contatos com quatro opções e o relatório completo (seções 1 a 6): análise matemática, experimentos com árvores degeneradas, perfeitas e AVL, e a pesquisa sobre árvores na biblioteca padrão de Java.
 
 Grupo: Bernardo Simão Rosa, Matheus Abreu e Levi Monteiro.
 
@@ -62,7 +62,7 @@ Chaves iguais são permitidas. A inserção começa procurando à direita em cas
 | `quantidadeNos`, percursos e `folhaMaisDistante` | O(n) |
 | `removerReferencia` | O(n) quando há muitas chaves iguais; O(log n) com chaves únicas |
 
-Esses custos consideram que cada comparação e a representação de cada valor têm custo constante. Os experimentos da AVL ainda precisam ser realizados.
+Esses custos consideram que cada comparação e a representação de cada valor têm custo constante. Os experimentos da AVL estão na seção 5 do relatório.
 
 ## Organização
 
@@ -90,8 +90,14 @@ src/
     TesteContadorLista.java
     GeradorDadosArvores.java
     BenchmarkArvores.java
+    BenchmarkAVL.java
     GeradorDadosContatos.java
     BenchmarkListas.java
+ferramentas/
+  gerar_relatorio.py
+  verificar_menu.py
+relatorio/
+  Relatorio_Trabalho2_Arvores.pdf
 compilar.ps1
 README.md
 ```
@@ -154,8 +160,17 @@ porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
 
 O menu e o cadastro aceitam valores de 1 a 4. A remoção por nome atende às duas opções de árvore e libera o telefone no `HashSet` após a exclusão. `TesteCadastro` verifica que a opção 4 cria árvores AVL nos dois índices.
 
-Os métodos `folhaMaisDistante` e `profundidade` também estão disponíveis na AVL. O benchmark deve escolher a folha mais distante no índice de telefone, buscar o mesmo contato por nome e removê-lo por telefone, usando os arquivos crescentes do experimento anterior, conforme o item 7.
+Os métodos `folhaMaisDistante` e `profundidade` também estão disponíveis na AVL. `BenchmarkAVL` escolhe a folha mais distante no índice de telefone, busca o mesmo contato por nome e o remove por telefone, usando os arquivos crescentes do experimento anterior, conforme o item 7.
 
 ## Relatório e experimentos
 
-O relatório parcial está em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf` e cobre as três primeiras seções, sobre árvores sem balanceamento automático. `GeradorDadosArvores` gera os oito arquivos usados para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário com medições documentadas na pasta `dados`. O PDF e essas medições ainda não incluem a AVL.
+O relatório completo está em `relatorio/Relatorio_Trabalho2_Arvores.pdf` (seções 1 a 6). O texto, as tabelas e os gráficos são gerados por `ferramentas/gerar_relatorio.py`. O relatório parcial entregue antes continua em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`.
+
+`GeradorDadosArvores` gera os oito arquivos usados para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário (`dados/resultados_arvores.csv`). `BenchmarkAVL` usa os arquivos com telefones crescentes e mede a árvore binária comum e a AVL na mesma execução, alternando a ordem a cada repetição (`dados/resultados_avl.csv`, ambiente em `dados/ambiente_avl.json`).
+
+```powershell
+& "$env:JAVA_HOME\bin\java.exe" -Xms256m -Xmx1024m -cp bin testes.BenchmarkAVL
+pip install -r ferramentas/requirements.txt
+python ferramentas/verificar_menu.py
+python ferramentas/gerar_relatorio.py
+```

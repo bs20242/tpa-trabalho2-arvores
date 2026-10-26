@@ -3,6 +3,7 @@ Escolha a estrutura de dados que deseja instanciar:
 1 - Lista Nao-Ordenada
 2 - Lista Ordenada
 3 - Arvore Binaria
+4 - Arvore AVL
 Opcao: 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -13,7 +14,7 @@ Opcao:
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o caminho do arquivo (Enter para 'entrada.txt'): 2047 contatos carregados com sucesso!
-Tempo total de leitura e montagem das listas: 138,4484 ms
+Tempo total de leitura e montagem das listas: 122,4437 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -25,7 +26,7 @@ Tempo total de leitura e montagem das listas: 138,4484 ms
 7 - Sair
 Escolha uma opcao: Digite o telefone a pesquisar: Contato encontrado: Contato 002047 - 00000002047
 Nome: Contato 002047
-Tempo gasto na busca: 0,1818 ms
+Tempo gasto na busca: 0,1462 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -36,7 +37,7 @@ Tempo gasto na busca: 0,1818 ms
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o telefone do contato a remover: Contato (Contato 002047 - 00000002047) excluido com sucesso.
-Tempo de remover na estrutura por telefone: 0,1758 ms
+Tempo de remover na estrutura por telefone: 0,1590 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
