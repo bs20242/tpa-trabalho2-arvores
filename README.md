@@ -164,7 +164,7 @@ Os métodos `folhaMaisDistante` e `profundidade` também estão disponíveis na 
 
 ## Relatório e experimentos
 
-O relatório completo está em `relatorio/Relatorio_Trabalho2_Arvores.pdf` (seções 1 a 6), com texto em `docs/Relatorio.md`. O relatório parcial entregue antes continua em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`.
+O relatório completo está em `relatorio/Relatorio_Trabalho2_Arvores.pdf` (seções 1 a 6). O texto, as tabelas e os gráficos são gerados por `ferramentas/gerar_relatorio.py`. O relatório parcial entregue antes continua em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`.
 
 `GeradorDadosArvores` gera os oito arquivos usados para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário (`dados/resultados_arvores.csv`). `BenchmarkAVL` usa os arquivos com telefones crescentes e mede a árvore binária comum e a AVL na mesma execução, alternando a ordem a cada repetição (`dados/resultados_avl.csv`, ambiente em `dados/ambiente_avl.json`).
 

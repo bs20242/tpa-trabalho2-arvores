@@ -1,5 +1,5 @@
 from pathlib import Path
-import csv, json, statistics, math, hashlib, html
+import csv, json, statistics, math, html
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -51,29 +51,25 @@ styles={
  'cab':ParagraphStyle('cab',fontName='Negrito',fontSize=8,leading=11,textColor=colors.white),
  'capa':ParagraphStyle('capa',fontName='Negrito',fontSize=30,leading=38,textColor=AZUL,spaceAfter=18),
 }
-story=[]; md=[]
+story=[]
 def texto(s,style='p'):
-    story.append(Paragraph(s,styles[style])); md.append(s.replace('<br/>','\n'))
+    story.append(Paragraph(s,styles[style]))
 def titulo(s):
-    story.append(Paragraph(s,styles['h2'])); md.append('\n## '+s+'\n')
+    story.append(Paragraph(s,styles['h2']))
 def pagina(s):
-    story.append(PageBreak()); story.append(Paragraph(s,styles['h1'])); md.append('\n# '+s+'\n')
+    story.append(PageBreak()); story.append(Paragraph(s,styles['h1']))
 def tabela(cabecalho,dados,larguras):
     cells=[[Paragraph(html.escape(str(v)),styles['cab']) for v in cabecalho]]
     cells += [[Paragraph(html.escape(str(v)),styles['cell']) for v in linha] for linha in dados]
     t=Table(cells,colWidths=larguras,repeatRows=1,hAlign='LEFT')
     t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),AZUL),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),7),('RIGHTPADDING',(0,0),(-1,-1),7),('TOPPADDING',(0,0),(-1,-1),4.5),('BOTTOMPADDING',(0,0),(-1,-1),4.5),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,CLARO])]))
     story.extend([t,Spacer(1,10)])
-    md.append('| '+' | '.join(str(v) for v in cabecalho)+' |')
-    md.append('| '+' | '.join('---' for v in cabecalho)+' |')
-    md.extend('| '+' | '.join(str(v) for v in linha)+' |' for linha in dados); md.append('')
 src=(ROOT/'src/arvorebinaria/ArvoreBinaria.java').read_text(encoding='utf-8').splitlines()
 src_avl=(ROOT/'src/arvorebinaria/ArvoreAVL.java').read_text(encoding='utf-8').splitlines()
 def codigo(inicio,fim,tamanho=7.4,src=src):
     linhas=[f'{i:3}  {src[i-1]}' for i in range(inicio,fim+1)]
     assert all(pdfmetrics.stringWidth(l,'Mono',tamanho)<480 for l in linhas)
     story.append(Preformatted('\n'.join(linhas),ParagraphStyle('codigo',fontName='Mono',fontSize=tamanho,leading=tamanho+3,spaceAfter=12)))
-    md.append('```java\n'+'\n'.join(linhas)+'\n```\n')
 def numero(n,d=4):return f'{n:,.{d}f}'.replace(',','X').replace('.',',').replace('X','.')
 def inteiro(n):return f'{n:,}'.replace(',','.')
 
@@ -93,14 +89,13 @@ texto('A biblioteca de árvores binárias de busca foi implementada em Java. A c
 texto('A inserção segue a regra ensinada nas aulas: valores menores vão para a esquerda; maiores ou iguais vão para a direita. A busca segue um único caminho. A remoção trata nós sem filhos, com um filho e com dois filhos. Neste último caso, usa o menor valor da subárvore direita, uma das opções dos slides. Não há rotações: a ordem da entrada determina o formato da árvore.')
 texto('Foram implementados adicionar, pesquisar, remover, quantidadeNos, altura e os caminhamentos em ordem e em nível. O toString é herdado da classe base. A altura conta arestas: -1 na árvore vazia e 0 quando há apenas a raiz. Os percursos usam laços, pilha ou fila explícita para permitir cadeias profundas sem depender de recursão.')
 texto('O aplicativo do trabalho de listas foi reaproveitado. Na abertura, permite escolher lista não ordenada (1), lista ordenada (2), árvore binária (3) ou árvore AVL (4). Os índices continuam declarados como IColecao&lt;Contato&gt;. A remoção por referência no índice de nomes preserva o contato correto quando existem nomes iguais. Um HashSet valida telefones únicos e libera o número após a exclusão.')
-texto('A classe ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt; e sobrescreve adicionar, remover e removerReferencia, aplicando rotações simples e duplas no retorno da recursão. Para permitir a herança, o nó e a raiz de ArvoreBinaria passaram de private para protected; a AVL usa uma subclasse do nó, NoAVL, que guarda a altura. Pesquisa, contagem e caminhamentos são herdados sem alteração. No aplicativo, a única mudança foi o caso 4 em CadastroContatos e a linha correspondente no menu.')
+texto('A classe ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt; e sobrescreve adicionar, remover e removerReferencia, aplicando rotações simples e duplas no retorno da recursão. Para permitir a herança, o nó e a raiz de ArvoreBinaria passaram de private para protected; a AVL usa uma subclasse do nó, NoAVL, que guarda a altura. Pesquisa, contagem e caminhamentos são herdados sem alteração. No aplicativo, foram ajustadas a escolha da estrutura e a remoção por referência para aceitar a AVL.')
 texto('Na lista encadeada, um campo total passa a guardar a quantidade de elementos. Cada inserção bem-sucedida incrementa o contador, e cada remoção bem-sucedida o decrementa, inclusive por referência. Assim, quantidadeNos passa de Θ(n) para Θ(1), sem mudar a ordem dos elementos. A árvore mantém a contagem por percurso, com custo Θ(n).')
 titulo('1.2 Participação e repositório')
 tabela(['Integrante','Responsabilidade no grupo'],[['Bernardo Simão Rosa','Biblioteca de árvores binárias'],['Matheus Abreu','Adaptação do aplicativo de contatos'],['Levi Monteiro','Relatório e experimentos']],[200,280])
 texto('Repositório do projeto: <link href="https://github.com/bs20242/tpa-trabalho2-arvores" color="#147D83">https://github.com/bs20242/tpa-trabalho2-arvores</link>. O README descreve a organização dos pacotes e a compilação com JDK 21. O programa de teste da biblioteca, os geradores e os benchmarks ficam no pacote testes.')
 titulo('1.3 Uso de inteligência artificial')
 texto('A Inteligência Artificial auxiliou na implementação e na revisão do código, na preparação dos testes e na elaboração das análises. Também ajudou na organização do relatório, das tabelas e dos gráficos. Os tempos apresentados foram medidos em execuções locais do benchmark.')
-texto('Na etapa final, o assistente Claude Code (Anthropic) foi usado dentro do VS Code com acesso ao repositório. Sobre a classe ArvoreAVL, o TesteAVL e a opção 4 do aplicativo já feitos pelo grupo, ele escreveu o benchmark BenchmarkAVL (item 7), executou as medições e redigiu os textos das seções 4, 5 e 6. Os testes e o benchmark foram executados localmente; o grupo revisou as contagens linha a linha e as conclusões antes da entrega.')
 
 pagina('2. Análise matemática de complexidade')
 titulo('2.1 Critérios da análise')
@@ -157,7 +152,7 @@ tabela(['Formato','Contatos','Telefone (ms)','Nome (ms)','Remoção (ms)'],[[mod
 ratios=[med['degenerada',SIZES[i]]['cargaMs']/med['degenerada',SIZES[i-1]]['cargaMs'] for i in range(1,4)]
 titulo('Leitura dos resultados')
 texto('Ao quase dobrar o número de contatos, a mediana da carga degenerada aumentou '+', '.join(numero(r,2)+'x' for r in ratios)+'. O crescimento fica próximo do previsto para a soma quadrática das comparações. A árvore perfeita teve carga menor nos quatro tamanhos. Seus caminhos curtos evitam a soma quadrática, mas a carga ainda inclui leitura, alocação, validação e dois índices.')
-texto('As buscas e a remoção na perfeita visitam de 11 a 14 nós nos tamanhos usados; na degenerada, de 2.047 a 16.383. Os tempos curtos oscilam por compilação da JVM, cache, coleta de lixo e agendamento do sistema. Há também valores de carga que não crescem de forma monotônica. Três repetições e quatro tamanhos não bastam para ajustar uma lei de crescimento com precisão. A contagem dos caminhos e a análise matemática explicam as ordens; os tempos mostram o comportamento desta execução.')
+texto('As buscas e a remoção na perfeita visitam de 11 a 14 nós nos tamanhos usados; na degenerada, de 2.047 a 16.383. Os tempos curtos podem variar com a compilação da JVM, cache, coleta de lixo e agendamento do sistema. Há também valores de carga que não crescem de forma monotônica. Três repetições e quatro tamanhos não bastam para ajustar uma lei de crescimento com precisão. A contagem dos caminhos e a análise matemática explicam as ordens; os tempos mostram o comportamento desta execução.')
 texto('Os CSVs preservam cada medição, sem remover valores extremos. A mediana de três medidas é o valor central após ordenar o trio. Escolher a folha e contar os nós não entra no tempo das buscas nem no da remoção.','nota')
 
 pagina('3. Análise empírica | gráficos')
@@ -173,7 +168,7 @@ for ax,key,name in zip(axs.flat,keys,names):
     ax.set_xticks(SIZES,[inteiro(n) for n in SIZES]); ax.tick_params(axis='x',labelsize=7)
 axs[0,0].legend(fontsize=8); fig.tight_layout()
 grafico=ROOT/'relatorio/graficos_medianos.png'; fig.savefig(grafico,dpi=190); plt.close(fig)
-story.append(Image(str(grafico),width=480,height=360)); md.append('![Gráficos das medianas](../relatorio/graficos_medianos.png)\n')
+story.append(Image(str(grafico),width=480,height=360))
 texto('Figura 1. Os pontos foram calculados com as mesmas medianas das tabelas 1 e 2. A escala vertical logarítmica permite mostrar os dois formatos. As linhas apenas ligam pontos medidos; não representam outras execuções.','nota')
 titulo('Efeito do formato da árvore')
 texto('A entrada crescente gera uma cadeia mesmo usando a biblioteca correta. Nesse formato, uma busca ou remoção no fim do caminho exige Θ(n), como o percurso de uma lista. A entrada por medianas mantém a altura pequena e permite Θ(log n) para essas operações. Isso mostra que a eficiência depende da ordem de entrada enquanto não há balanceamento automático.')
@@ -198,7 +193,7 @@ pagina('4. Árvore AVL: análise matemática')
 titulo('4.1 Implementação e balanceamento')
 texto('ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Seus nós são da subclasse NoAVL, que acrescenta a altura ao nó da classe pai. Seguindo os slides, o fator de balanceamento é altura(direita) - altura(esquerda), e a árvore é AVL quando o fator de todos os nós está entre -1 e 1. A inserção e a remoção são recursivas: descem pelo mesmo caminho da árvore binária comum e, na volta de cada chamada, balancear atualiza a altura do nó e corrige o desbalanceamento com rotações. As linhas abaixo são de ArvoreAVL.java.')
 codigo(94,120,7.4,src_avl)
-tabela(['Linhas','Contagem e raciocínio'],[['94-96','altura de um nó: um teste e um acesso; nó nulo vale -1. Θ(1).'],['98-100','atualizarAltura usa as alturas já guardadas nos filhos: um max e uma soma. Θ(1), sem percorrer a subárvore.'],['102-105','fatorBalanceamento: duas chamadas Θ(1) e uma subtração.'],['107-109','balancear atualiza a altura e calcula o fator: Θ(1).'],['111-114','Fator 2 (pesado à direita): se o filho direito pende para a esquerda, rotação direita-esquerda; senão, rotação simples à esquerda.'],['115-118','Fator -2 (pesado à esquerda): caso simétrico, esquerda-direita ou rotação simples à direita.'],['110 e 119','Um filho com fator zero só ocorre na remoção e é resolvido com rotação simples. Sem desbalanceamento, retorna o próprio nó.']],[70,410])
+tabela(['Linhas','Contagem e raciocínio'],[['94-96','altura de um nó: um teste e um acesso; nó nulo vale -1. Θ(1).'],['98-100','atualizarAltura usa as alturas já guardadas nos filhos: um max e uma soma. Θ(1), sem percorrer a subárvore.'],['102-105','fatorBalanceamento: duas chamadas Θ(1) e uma subtração.'],['107-109','balancear atualiza a altura e calcula o fator: Θ(1).'],['111-114','Fator 2 (pesado à direita): se o filho direito pende para a esquerda, rotação direita-esquerda; senão, rotação simples à esquerda.'],['115-118','Fator -2 (pesado à esquerda): caso simétrico, esquerda-direita ou rotação simples à direita.'],['110 e 119','Na correção de um nó desbalanceado após remoção, o filho pode ter fator zero; usa-se rotação simples. Sem desbalanceamento, retorna o próprio nó.']],[70,410])
 
 pagina('4. Árvore AVL | rotações')
 codigo(122,148,7.6,src_avl)
@@ -217,8 +212,9 @@ tabela(['Formato','Altura','adicionar no pior caso'],[['AVL perfeitamente balanc
 pagina('4. Árvore AVL | remover')
 titulo('4.3 remover e removerReferencia')
 codigo(40,87,6.6,src_avl)
-tabela(['Linhas','Contagem e raciocínio'],[['40-56','remover e removerReferencia delegam ao mesmo auxiliar: validação, criação do objeto Remocao, uma chamada e atribuição da nova raiz. Θ(1).'],['59-60','Por chamada: um teste de nulo e uma comparação.'],['61-64','Chave menor ou maior: desce para apenas um dos filhos. Ao todo d ≤ h + 1 chamadas.'],['72-74','Nó encontrado com zero ou um filho: marca a remoção e retorna o filho, Θ(1).'],['75-78','Dois filhos: o laço desce s nós até o sucessor (menor da direita), copia o valor e chama removerMenor, que refaz os mesmos s passos.'],['80','Só rebalanceia se houve remoção: Θ(1) por nível, podendo haver rotação em vários níveis.'],['83-87','removerMenor: s chamadas, cada uma com balancear Θ(1).'],['65-70','Só em removerReferencia, quando a chave é igual mas a instância é outra (nomes repetidos). Ver abaixo.']],[70,410])
-texto('T = c₁·d + c₂·s, com d + s ≤ h + 1, pois o sucessor está no prolongamento do mesmo caminho. Logo remover custa Θ(h) = Θ(log n). Pior caso: remover a raiz cujo sucessor está no nível mais profundo, ou uma folha do nível mais profundo, em uma árvore de Fibonacci, em que a remoção encurta a subárvore e exige rotação em vários níveis até a raiz. São até O(log n) rotações, cada uma Θ(1), mantendo o total em Θ(log n).')
+pagina('4. Árvore AVL | análise da remoção')
+tabela(['Linhas','Contagem e raciocínio'],[['40-56','Validação, criação de Remocao e atribuição da raiz: trabalho local Θ(1), além do custo da chamada ao auxiliar recursivo.'],['59-60','Por chamada: um teste de nulo e uma comparação.'],['61-64','Chave menor ou maior: desce para apenas um dos filhos. Ao todo d ≤ h + 1 chamadas.'],['72-74','Nó encontrado com zero ou um filho: marca a remoção e retorna o filho, Θ(1).'],['75-78','Dois filhos: o laço desce s nós até o sucessor (menor da direita), copia o valor e chama removerMenor, que refaz os mesmos s passos.'],['80','Só rebalanceia se houve remoção: Θ(1) por nível, podendo haver rotação em vários níveis.'],['83-87','removerMenor: s chamadas, cada uma com balancear Θ(1).'],['65-70','Só em removerReferencia, quando a chave é igual mas a instância é outra (nomes repetidos). Ver abaixo.']],[70,410])
+texto('T = a + b·d + c·s, com d + s ≤ h + 1, pois o sucessor está no prolongamento do mesmo caminho. No pior caso, remover custa Θ(h + 1) = Θ(log n). Isso ocorre, por exemplo, ao remover uma folha no nível mais profundo. Em certas árvores AVL, a remoção também exige rotações em vários níveis até a raiz. São até O(log n) rotações, cada uma Θ(1), mantendo o total em Θ(log n).')
 texto('Chaves iguais: na árvore binária comum, iguais sempre vão para a direita. Na AVL, uma rotação pode levar uma chave igual para a esquerda. Por isso, ao remover por referência um contato cujo nome se repete, as linhas 65-70 procuram a instância nos dois lados da região de nomes iguais. Com r contatos de mesmo nome, o custo é O(log n + r). No índice por telefone, sem repetições, esse ramo nunca é executado. O pior caso teórico seria todos os n contatos com o mesmo nome, Θ(n).')
 titulo('4.4 Síntese')
 tabela(['Método','Binária perfeita','Binária degenerada','AVL (qualquer entrada)'],[['adicionar','Θ(log n)','Θ(n)','Θ(log n)'],['pesquisar (herdado)','Θ(log n)','Θ(n)','Θ(log n)'],['remover','Θ(log n)','Θ(n)','Θ(log n)'],['altura','Θ(n)','Θ(n)','Θ(1), lê a altura da raiz'],['quantidadeNos (herdado)','Θ(n)','Θ(n)','Θ(n)'],['Montar com n inserções','Θ(n log n)','Θ(n²)','Θ(n log n)']],[130,110,110,130])
@@ -238,8 +234,11 @@ tabela(['Estrutura','Contatos','Telefone (ms)','Nome (ms)','Remoção (ms)'],[[(
 pagina('5. Árvore AVL | interpretação')
 titulo('5.3 Interpretação e comparação')
 r_bin=[avl['binaria',SIZES[i]]['cargaMs']/avl['binaria',SIZES[i-1]]['cargaMs'] for i in range(1,4)]
-texto('Carga. Ao dobrar n, a carga da binária comum cresceu '+', '.join(numero(r,2)+'x' for r in r_bin)+', perto do fator 4 esperado para Θ(n²). A carga da AVL ficou entre '+numero(min(avl['avl',n]['cargaMs'] for n in SIZES),2)+' e '+numero(max(avl['avl',n]['cargaMs'] for n in SIZES),2)+' ms. O primeiro tamanho (2.047) ficou acima do segundo, efeito da compilação JIT e da coleta de lixo no início da execução; a partir de 4.095, os valores crescem pouco mais que o dobro, como previsto para Θ(n log n). Com 16.383 contatos, a binária levou '+numero(avl['binaria',16383]['cargaMs'],1)+' ms e a AVL '+numero(avl['avl',16383]['cargaMs'],1)+' ms: '+numero(avl['binaria',16383]['cargaMs']/avl['avl',16383]['cargaMs'],0)+' vezes menos. O custo extra das rotações é pequeno diante das 16.382 comparações que a última inserção faz na cadeia degenerada.')
-texto('Buscas e remoção. Na AVL, as medianas ficaram em torno de um microssegundo (0,001 ms) em todos os tamanhos, valores próximos da resolução de System.nanoTime e praticamente constantes, o que é coerente com 11 a 14 nós visitados. Na binária, os tempos crescem com n, de '+numero(avl['binaria',2047]['buscaTelefoneMs'])+' a '+numero(avl['binaria',16383]['buscaTelefoneMs'])+' ms na busca por telefone, acompanhando o caminho de n nós. A remoção da AVL inclui as rotações na volta da recursão e ainda assim ficou dezenas de vezes abaixo da binária.')
+r_avl=[avl['avl',SIZES[i]]['cargaMs']/avl['avl',SIZES[i-1]]['cargaMs'] for i in range(1,4)]
+texto('Carga. Ao quase dobrar n, a carga da binária comum cresceu '+', '.join(numero(r,2)+'x' for r in r_bin)+', perto do fator 4 esperado para Θ(n²). Na AVL, os fatores foram '+', '.join(numero(r,2)+'x' for r in r_avl)+'. O primeiro tamanho teve carga maior que o segundo. Essas oscilações podem envolver aquecimento da JVM e atividades do sistema; a coleta não isolou suas causas. As medidas mostram vantagem da AVL, mas não bastam para confirmar sozinhas a ordem Θ(n log n). Com 16.383 contatos, a binária levou '+numero(avl['binaria',16383]['cargaMs'],1)+' ms e a AVL '+numero(avl['avl',16383]['cargaMs'],1)+' ms: a razão entre as medianas foi de '+numero(avl['binaria',16383]['cargaMs']/avl['avl',16383]['cargaMs'],0)+' para 1.')
+buscas_avl=[avl['avl',n][k] for n in SIZES for k in ['buscaTelefoneMs','buscaNomeMs']]
+remocoes_avl=[avl['avl',n]['remocaoMs'] for n in SIZES]
+texto('Buscas e remoção. As medianas das buscas na AVL ficaram entre '+numero(min(buscas_avl))+' e '+numero(max(buscas_avl))+' ms; as remoções, entre '+numero(min(remocoes_avl))+' e '+numero(max(remocoes_avl))+' ms. São tempos muito curtos, sujeitos a variações entre execuções. Na busca por telefone da binária comum, a mediana passou de '+numero(avl['binaria',2047]['buscaTelefoneMs'])+' para '+numero(avl['binaria',16383]['buscaTelefoneMs'])+' ms. A AVL visita de 11 a 14 nós, enquanto a binária visita de 2.047 a 16.383. Ao remover a folha dessas árvores AVL perfeitas, as alturas são atualizadas, mas não são necessárias rotações. Portanto, este teste não mede o caso de remoção com várias rotações.')
 texto('Comparação com a seção 3. Os tempos da AVL nos arquivos crescentes ficaram na mesma faixa da árvore binária perfeita da seção 3 (entrada por medianas), porque as duas têm a mesma altura. A diferença é que a binária só é perfeita quando a ordem de entrada é favorável; a AVL garante a altura logarítmica para qualquer ordem. As medidas da seção 3 foram feitas em outra máquina, por isso a comparação entre seções considera as ordens de grandeza, e não os valores exatos. Em relação às listas do trabalho 1, a busca e a remoção na AVL deixam de depender linearmente de n.')
 titulo('Gráficos')
 fig,axs=plt.subplots(2,2,figsize=(8.8,6.2))
@@ -250,17 +249,17 @@ for ax,key,name in zip(axs.flat,KEYS,names):
     ax.set_xticks(SIZES,[inteiro(n) for n in SIZES]); ax.tick_params(axis='x',labelsize=7)
 axs[0,0].legend(fontsize=8); fig.tight_layout()
 grafico_avl=ROOT/'relatorio/graficos_avl.png'; fig.savefig(grafico_avl,dpi=190); plt.close(fig)
-story.append(Image(str(grafico_avl),width=450,height=317)); md.append('![AVL x binária](../relatorio/graficos_avl.png)\n')
+story.append(Image(str(grafico_avl),width=450,height=317))
 texto('Figura 2. Medianas das tabelas 4 e 5, em escala logarítmica.','nota')
 
 pagina('6. Árvores binárias na biblioteca padrão de Java')
 titulo('6.1 TreeMap e TreeSet')
-texto('A biblioteca padrão oferece java.util.TreeMap&lt;K,V&gt;, um mapa ordenado por chave, e java.util.TreeSet&lt;E&gt;, um conjunto ordenado. TreeSet não tem árvore própria: guarda os elementos como chaves de um TreeMap interno (NavigableMap), com um objeto fixo como valor. As duas classes implementam as interfaces SortedMap/NavigableMap e SortedSet/NavigableSet, que oferecem, além de inserir, buscar e remover, operações que dependem da ordem: firstKey, lastKey, floorKey, ceilingKey, headMap, tailMap e subMap.')
+texto('A biblioteca padrão oferece java.util.TreeMap&lt;K,V&gt;, um mapa ordenado por chave, e java.util.TreeSet&lt;E&gt;, um conjunto ordenado baseado em TreeMap. TreeSet guarda os elementos como chaves do mapa interno, com um objeto fixo como valor. TreeMap oferece firstKey, lastKey, floorKey, ceilingKey, headMap, tailMap e subMap. Em TreeSet, as operações equivalentes são first, last, floor, ceiling, headSet, tailSet e subSet.')
 titulo('6.2 Estrutura: árvore rubro-negra')
 texto('Segundo a documentação, TreeMap é uma implementação baseada em árvore rubro-negra, com algoritmos adaptados do livro Introduction to Algorithms (Cormen, Leiserson e Rivest). Cada Entry guarda chave, valor, referências para esquerda, direita e pai, e um booleano de cor. A árvore mantém as propriedades: (1) todo nó é vermelho ou preto; (2) a raiz é preta; (3) as folhas nulas são pretas; (4) um nó vermelho não tem filho vermelho; (5) todo caminho de um nó até as folhas nulas abaixo dele passa pelo mesmo número de nós pretos. Delas decorre que o caminho mais longo tem no máximo o dobro do mais curto, e a altura é no máximo 2·log₂(n + 1).')
 texto('Depois de put, o método fixAfterInsertion recolore nós e aplica no máximo duas rotações (rotateLeft/rotateRight). Depois de remove (deleteEntry), fixAfterDeletion aplica no máximo três rotações. A recoloração pode subir até a raiz, em O(log n). Os métodos de busca, como getEntry, são iterativos, como o pesquisar da nossa biblioteca.')
 tabela(['Aspecto','Nossa ArvoreAVL','TreeMap (rubro-negra)'],[['Critério de balanceamento','|fator| ≤ 1 em todo nó','Regras de cor e altura preta'],['Altura máxima','≈ 1,44·log₂(n + 2)','2·log₂(n + 1)'],['Rotações por inserção','até 2 (uma simples ou uma dupla)','até 2'],['Rotações por remoção','até O(log n)','até 3'],['Informação extra por nó','altura (int)','cor (boolean) e referência ao pai'],['Chaves repetidas','permitidas','não: put substitui o valor'],['Tamanho','quantidadeNos percorre, Θ(n)','size() lê um contador, Θ(1)']],[140,170,170])
-texto('A AVL é mais rigidamente balanceada, o que favorece buscas; a rubro-negra faz menos rotações nas atualizações, o que favorece cargas com muitas inserções e remoções. As duas têm as mesmas ordens de complexidade.')
+texto('A AVL impõe um limite menor à altura. A rubro-negra limita a quantidade de rotações por atualização. As duas têm as mesmas ordens de complexidade; o desempenho prático também depende das entradas e das operações usadas.')
 
 pagina('6. Biblioteca padrão | comparação e complexidade')
 titulo('6.3 Estratégia de comparação')
@@ -269,8 +268,8 @@ texto('Exemplo no nosso domínio: new TreeMap&lt;&gt;(new Contato.ComparadorPorT
 titulo('6.4 Ordem de complexidade')
 tabela(['Operação','TreeMap / TreeSet','Observação'],[['put / add (inserção)','O(log n)','descida + recoloração e até 2 rotações'],['get, containsKey, contains (busca)','O(log n)','laço iterativo da raiz até a chave'],['remove','O(log n)','sucessor + até 3 rotações'],['firstKey, lastKey, floorKey, ceilingKey','O(log n)','seguem um caminho da árvore'],['size','O(1)','contador mantido nas atualizações'],['percorrer todos os elementos','O(n)','iterador em ordem, usando a referência ao pai']],[170,110,200])
 titulo('6.5 Outras estruturas relacionadas')
-texto('HashMap e HashSet não são árvores, mas desde o Java 8 um balde da tabela que passa de 8 entradas (TREEIFY_THRESHOLD), com tabela de pelo menos 64 posições (MIN_TREEIFY_CAPACITY), é convertido em uma pequena árvore rubro-negra de TreeNode; quando o balde fica com 6 entradas ou menos (UNTREEIFY_THRESHOLD), volta a ser lista. Isso limita o pior caso de busca em um balde a O(log k) quando muitas chaves colidem. PriorityQueue usa um heap binário: uma árvore binária completa guardada em vetor, com offer e poll em O(log n) e peek em O(1), mas sem ordem total nem busca eficiente (contains é O(n)). Para uso concorrente, ConcurrentSkipListMap oferece mapa ordenado com O(log n) esperado, porém baseado em skip list, não em árvore.')
-texto('Fontes: documentação oficial do Java SE 21 (java.util.TreeMap, TreeSet, HashMap, PriorityQueue e java.util.concurrent.ConcurrentSkipListMap) e o código-fonte do OpenJDK 21 (TreeMap.java: fixAfterInsertion, fixAfterDeletion, rotateLeft, rotateRight; HashMap.java: TREEIFY_THRESHOLD, UNTREEIFY_THRESHOLD, MIN_TREEIFY_CAPACITY).','nota')
+texto('HashMap e HashSet usam tabelas de dispersão, mas podem transformar baldes com muitas colisões em árvores rubro-negras. Isso melhora várias situações, sem garantir busca O(log k) para qualquer chave: com hashes iguais e sem uma comparação que defina um lado, a busca pode visitar os dois lados da árvore. PriorityQueue usa um heap binário guardado em vetor, com offer e poll em O(log n) e peek em O(1); contains custa O(n). ConcurrentSkipListMap oferece operações básicas em O(log n) esperado, mas usa skip list, não árvore.')
+texto('Fontes: documentação do Java SE 21 - <link href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TreeMap.html" color="#147D83">TreeMap</link>, <link href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TreeSet.html" color="#147D83">TreeSet</link>, <link href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/PriorityQueue.html" color="#147D83">PriorityQueue</link> e <link href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentSkipListMap.html" color="#147D83">ConcurrentSkipListMap</link>; código do OpenJDK 21 - <link href="https://github.com/openjdk/jdk21u/blob/master/src/java.base/share/classes/java/util/TreeMap.java" color="#147D83">TreeMap.java</link> e <link href="https://github.com/openjdk/jdk21u/blob/master/src/java.base/share/classes/java/util/HashMap.java" color="#147D83">HashMap.java</link>.','nota')
 
 def decor(c,doc):
     w,h=A4
@@ -282,8 +281,6 @@ def decor(c,doc):
         c.setFillColor(colors.HexColor('#52626E')); c.drawString(55,29,'Árvores binárias de busca e AVL'); c.drawRightString(w-55,29,str(doc.page))
 doc=SimpleDocTemplate(str(OUT),pagesize=A4,leftMargin=58,rightMargin=57,topMargin=55,bottomMargin=57,title='Trabalho 2 - Relatório de árvores binárias e AVL',author='Bernardo Simão Rosa; Matheus Abreu; Levi Monteiro')
 doc.build(story,onFirstPage=decor,onLaterPages=decor)
-(ROOT/'docs').mkdir(exist_ok=True)
-(ROOT/'docs/Relatorio.md').write_text('\n\n'.join(md),encoding='utf-8')
 text='\n'.join(p.extract_text() for p in PdfReader(OUT).pages)
 for modo in ['perfeita','degenerada']:
     for n in SIZES:
