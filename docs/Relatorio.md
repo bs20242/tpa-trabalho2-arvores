@@ -50,7 +50,7 @@ Foram implementados adicionar, pesquisar, remover, quantidadeNos, altura e os ca
 
 O aplicativo do trabalho de listas foi reaproveitado. Na abertura, permite escolher lista não ordenada (1), lista ordenada (2), árvore binária (3) ou árvore AVL (4). Os índices continuam declarados como IColecao&lt;Contato&gt;. A remoção por referência no índice de nomes preserva o contato correto quando existem nomes iguais. Um HashSet valida telefones únicos e libera o número após a exclusão.
 
-A classe ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt; e sobrescreve adicionar, remover e removerReferencia, aplicando rotações simples e duplas no retorno da recursão. Para permitir a herança, o nó e a raiz de ArvoreBinaria passaram de private para protected, e o nó ganhou um campo altura, mantido apenas pela AVL. Pesquisa, contagem e caminhamentos são herdados sem alteração. No aplicativo, a única mudança foi o caso 4 em CadastroContatos e a linha correspondente no menu.
+A classe ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt; e sobrescreve adicionar, remover e removerReferencia, aplicando rotações simples e duplas no retorno da recursão. Para permitir a herança, o nó e a raiz de ArvoreBinaria passaram de private para protected; a AVL usa uma subclasse do nó, NoAVL, que guarda a altura. Pesquisa, contagem e caminhamentos são herdados sem alteração. No aplicativo, a única mudança foi o caso 4 em CadastroContatos e a linha correspondente no menu.
 
 Na lista encadeada, um campo total passa a guardar a quantidade de elementos. Cada inserção bem-sucedida incrementa o contador, e cada remoção bem-sucedida o decrementa, inclusive por referência. Assim, quantidadeNos passa de Θ(n) para Θ(1), sem mudar a ordem dos elementos. A árvore mantém a contagem por percurso, com custo Θ(n).
 
@@ -78,7 +78,7 @@ Repositório do projeto: <link href="https://github.com/bs20242/tpa-trabalho2-ar
 
 A Inteligência Artificial auxiliou na implementação e na revisão do código, na preparação dos testes e na elaboração das análises. Também ajudou na organização do relatório, das tabelas e dos gráficos. Os tempos apresentados foram medidos em execuções locais do benchmark.
 
-Na etapa final, o assistente Claude Code (Anthropic) foi usado dentro do VS Code com acesso ao repositório. A partir do enunciado, ele levantou o que faltava (itens 6, 7 e 8), propôs e escreveu a classe ArvoreAVL, o teste TesteAVL, o benchmark BenchmarkAVL, a opção 4 do aplicativo e os textos das seções 4, 5 e 6. Os testes e o benchmark foram executados localmente; o grupo revisou o código, as contagens linha a linha e as conclusões antes da entrega. Um ponto levantado nessa revisão foi o tratamento de nomes iguais na AVL, descrito na seção 4.
+Na etapa final, o assistente Claude Code (Anthropic) foi usado dentro do VS Code com acesso ao repositório. Sobre a classe ArvoreAVL, o TesteAVL e a opção 4 do aplicativo já feitos pelo grupo, ele escreveu o benchmark BenchmarkAVL (item 7), executou as medições e redigiu os textos das seções 4, 5 e 6. Os testes e o benchmark foram executados localmente; o grupo revisou as contagens linha a linha e as conclusões antes da entrega.
 
 
 # 2. Análise matemática de complexidade
@@ -508,50 +508,39 @@ A classe base e a interface são do <link href="https://github.com/victoriocarva
 
 
 
-## 4.1 Implementação e invariante
+## 4.1 Implementação e balanceamento
 
 
-ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Cada nó guarda sua altura, e o fator de balanceamento é altura(esquerda) - altura(direita). A árvore é AVL quando o fator de todos os nós está entre -1 e 1. A inserção e a remoção são recursivas: descem pelo mesmo caminho da árvore binária comum e, na volta de cada chamada, o método balancear atualiza a altura do nó e corrige o desbalanceamento com rotações. As linhas abaixo são de ArvoreAVL.java.
+ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Seus nós são da subclasse NoAVL, que acrescenta a altura ao nó da classe pai. Seguindo os slides, o fator de balanceamento é altura(direita) - altura(esquerda), e a árvore é AVL quando o fator de todos os nós está entre -1 e 1. A inserção e a remoção são recursivas: descem pelo mesmo caminho da árvore binária comum e, na volta de cada chamada, balancear atualiza a altura do nó e corrige o desbalanceamento com rotações. As linhas abaixo são de ArvoreAVL.java.
 
 ```java
- 65      private int alturaNo(No<T> no) {
- 66          return no == null ? -1 : no.altura;
- 67      }
- 68      private void atualizarAltura(No<T> no) {
- 69          no.altura = 1 + Math.max(alturaNo(no.esq), alturaNo(no.dir));
- 70      }
- 71      private int fatorBalanceamento(No<T> no) {
- 72          return alturaNo(no.esq) - alturaNo(no.dir);
- 73      }
- 74      private No<T> balancear(No<T> no) {
- 75          atualizarAltura(no);
- 76          int fb = fatorBalanceamento(no);
- 77          if (fb > 1) {
- 78              if (fatorBalanceamento(no.esq) < 0) no.esq = rotacionarEsquerda(no.esq);
- 79              return rotacionarDireita(no);
- 80          }
- 81          if (fb < -1) {
- 82              if (fatorBalanceamento(no.dir) > 0) no.dir = rotacionarDireita(no.dir);
- 83              return rotacionarEsquerda(no);
- 84          }
- 85          return no;
- 86      }
- 87      private No<T> rotacionarDireita(No<T> no) {
- 88          No<T> novaRaiz = no.esq;
- 89          no.esq = novaRaiz.dir;
- 90          novaRaiz.dir = no;
- 91          atualizarAltura(no);
- 92          atualizarAltura(novaRaiz);
- 93          return novaRaiz;
- 94      }
- 95      private No<T> rotacionarEsquerda(No<T> no) {
- 96          No<T> novaRaiz = no.dir;
- 97          no.dir = novaRaiz.esq;
- 98          novaRaiz.esq = no;
- 99          atualizarAltura(no);
-100          atualizarAltura(novaRaiz);
-101          return novaRaiz;
-102      }
+ 94      private int altura(No<T> no) {
+ 95          return no == null ? -1 : ((NoAVL<T>) no).altura;
+ 96      }
+ 97  
+ 98      private void atualizarAltura(No<T> no) {
+ 99          ((NoAVL<T>) no).altura = 1 + Math.max(altura(no.esq), altura(no.dir));
+100      }
+101  
+102      // Convencao dos slides: altura da direita menos altura da esquerda.
+103      private int fatorBalanceamento(No<T> no) {
+104          return altura(no.dir) - altura(no.esq);
+105      }
+106  
+107      private No<T> balancear(No<T> no) {
+108          atualizarAltura(no);
+109          int fator = fatorBalanceamento(no);
+110          // Filho com fator zero tambem usa rotacao simples na remocao.
+111          if (fator > 1) {
+112              if (fatorBalanceamento(no.dir) < 0) return rotacaoDireitaEsquerda(no);
+113              return rotacaoEsquerda(no);
+114          }
+115          if (fator < -1) {
+116              if (fatorBalanceamento(no.esq) > 0) return rotacaoEsquerdaDireita(no);
+117              return rotacaoDireita(no);
+118          }
+119          return no;
+120      }
 ```
 
 
@@ -559,15 +548,72 @@ ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Cada nó guarda sua altura, 
 
 | --- | --- |
 
-| 65-73 | alturaNo (nulo vale -1), atualizarAltura (max das alturas já guardadas nos filhos + 1) e fatorBalanceamento: Θ(1) cada, sem percorrer subárvores. |
+| 94-96 | altura de um nó: um teste e um acesso; nó nulo vale -1. Θ(1). |
 
-| 74-76 | balancear atualiza a altura e calcula o fator: Θ(1). |
+| 98-100 | atualizarAltura usa as alturas já guardadas nos filhos: um max e uma soma. Θ(1), sem percorrer a subárvore. |
 
-| 77-85 | Fator 2 (pesado à esquerda): se o filho esquerdo pende para a direita (LR), gira-o à esquerda; depois gira o nó à direita (LL). Fator -2 é simétrico (RR ou RL). Caso contrário, retorna sem rotação. No máximo duas rotações. |
+| 102-105 | fatorBalanceamento: duas chamadas Θ(1) e uma subtração. |
 
-| 87-102 | Cada rotação troca três referências e atualiza duas alturas, primeiro a do nó que desce e depois a da nova raiz: Θ(1). Logo balancear custa Θ(1). |
+| 107-109 | balancear atualiza a altura e calcula o fator: Θ(1). |
+
+| 111-114 | Fator 2 (pesado à direita): se o filho direito pende para a esquerda, rotação direita-esquerda; senão, rotação simples à esquerda. |
+
+| 115-118 | Fator -2 (pesado à esquerda): caso simétrico, esquerda-direita ou rotação simples à direita. |
+
+| 110 e 119 | Um filho com fator zero só ocorre na remoção e é resolvido com rotação simples. Sem desbalanceamento, retorna o próprio nó. |
 
 
+
+
+# 4. Árvore AVL | rotações
+
+
+```java
+122      private No<T> rotacaoEsquerda(No<T> no) {
+123          No<T> novaRaiz = no.dir;
+124          no.dir = novaRaiz.esq;
+125          novaRaiz.esq = no;
+126          atualizarAltura(no);
+127          atualizarAltura(novaRaiz);
+128          return novaRaiz;
+129      }
+130  
+131      private No<T> rotacaoDireita(No<T> no) {
+132          No<T> novaRaiz = no.esq;
+133          no.esq = novaRaiz.dir;
+134          novaRaiz.dir = no;
+135          atualizarAltura(no);
+136          atualizarAltura(novaRaiz);
+137          return novaRaiz;
+138      }
+139  
+140      private No<T> rotacaoEsquerdaDireita(No<T> no) {
+141          no.esq = rotacaoEsquerda(no.esq);
+142          return rotacaoDireita(no);
+143      }
+144  
+145      private No<T> rotacaoDireitaEsquerda(No<T> no) {
+146          no.dir = rotacaoDireita(no.dir);
+147          return rotacaoEsquerda(no);
+148      }
+```
+
+
+| Linhas | Contagem e raciocínio |
+
+| --- | --- |
+
+| 122-129 | rotacaoEsquerda: o filho direito sobe, três referências mudam e duas alturas são atualizadas, primeiro a do nó que desce e depois a da nova raiz. Θ(1). |
+
+| 131-138 | rotacaoDireita: simétrica. Θ(1). |
+
+| 140-148 | Rotações duplas: uma rotação no filho e outra no nó. Duas operações Θ(1). |
+
+
+
+Assim, balancear custa Θ(1) em todos os casos: no máximo duas rotações, cada uma com quantidade fixa de operações, independente de n. As rotações preservam o percurso em ordem e, portanto, a propriedade de árvore de busca.
+
+altura() é sobrescrito (linhas 89-92) e devolve a altura guardada na raiz, em Θ(1). Na árvore binária comum, o mesmo método percorre a árvore em nível, em Θ(n).
 
 
 # 4. Árvore AVL | adicionar
@@ -578,18 +624,22 @@ ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Cada nó guarda sua altura, 
 
 
 ```java
- 10      @Override
- 11      public boolean adicionar(T valor) {
- 12          if (valor == null) return false;
- 13          raiz = adicionar(raiz, valor);
- 14          return true;
- 15      }
- 16      private No<T> adicionar(No<T> no, T valor) {
- 17          if (no == null) return new No<>(valor);
- 18          if (comparador.compare(valor, no.valor) < 0) no.esq = adicionar(no.esq, valor);
- 19          else no.dir = adicionar(no.dir, valor);
- 20          return balancear(no);
- 21      }
+ 23      @Override
+ 24      public boolean adicionar(T valor) {
+ 25          if (valor == null) return false;
+ 26          raiz = adicionar(raiz, valor);
+ 27          return true;
+ 28      }
+ 29  
+ 30      private No<T> adicionar(No<T> no, T valor) {
+ 31          if (no == null) return new NoAVL<>(valor);
+ 32          if (comparador.compare(valor, no.valor) < 0) {
+ 33              no.esq = adicionar(no.esq, valor);
+ 34          } else {
+ 35              no.dir = adicionar(no.dir, valor);
+ 36          }
+ 37          return balancear(no);
+ 38      }
 ```
 
 
@@ -597,15 +647,15 @@ ArvoreAVL&lt;T&gt; herda de ArvoreBinaria&lt;T&gt;. Cada nó guarda sua altura, 
 
 | --- | --- |
 
-| 12 | Validação de valor nulo: Θ(1). |
+| 25 | Validação de valor nulo: Θ(1). |
 
-| 13 | Uma chamada ao auxiliar recursivo e a atribuição da nova raiz, que pode mudar após uma rotação. |
+| 26 | Uma chamada ao auxiliar recursivo e a atribuição da nova raiz, que pode mudar após uma rotação. |
 
-| 17 | Caso base: cria o nó novo na posição de folha. Ocorre uma vez. |
+| 31 | Caso base: cria o NoAVL na posição de folha, com altura 0. Ocorre uma vez. |
 
-| 18-19 | Uma comparação e uma chamada recursiva para apenas um dos filhos. As chamadas seguem um único caminho: d ≤ h + 1 nós. |
+| 32-36 | Uma comparação e uma chamada recursiva para apenas um dos filhos; iguais vão para a direita. As chamadas seguem um único caminho: d ≤ h + 1 nós. |
 
-| 20 | balancear no retorno de cada chamada: Θ(1), conforme 4.1. |
+| 37 | balancear no retorno de cada chamada: Θ(1), conforme 4.1. |
 
 
 
@@ -634,47 +684,54 @@ Pior caso de adicionar: inserir uma chave que desça até o nível mais profundo
 
 
 ```java
- 23      @Override
- 24      public boolean remover(T valor) {
- 25          return removerAVL(valor, false);
- 26      }
- 27      @Override
- 28      public boolean removerReferencia(T valor) {
- 29          return removerAVL(valor, true);
- 30      }
- 31      private boolean removerAVL(T valor, boolean referencia) {
- 32          if (valor == null) return false;
- 33          removido = false;
- 34          raiz = remover(raiz, valor, referencia);
- 35          return removido;
- 36      }
- 37      private No<T> remover(No<T> no, T valor, boolean referencia) {
- 38          if (no == null) return null;
- 39          int c = comparador.compare(valor, no.valor);
- 40          if (c == 0 && (!referencia || no.valor == valor)) {
- 41              removido = true;
- 42              if (no.esq == null) return no.dir;
- 43              if (no.dir == null) return no.esq;
- 44              No<T> sucessor = no.dir;
- 45              while (sucessor.esq != null) sucessor = sucessor.esq;
- 46              no.valor = sucessor.valor;
- 47              no.dir = removerMenor(no.dir);
- 48          } else if (c == 0) {
- 49              // Rotacoes podem levar chaves iguais para a esquerda: procura a instancia nos dois lados.
- 50              no.esq = remover(no.esq, valor, true);
- 51              if (!removido) no.dir = remover(no.dir, valor, true);
- 52          } else if (c < 0) {
- 53              no.esq = remover(no.esq, valor, referencia);
- 54          } else {
- 55              no.dir = remover(no.dir, valor, referencia);
- 56          }
- 57          return balancear(no);
- 58      }
- 59      private No<T> removerMenor(No<T> no) {
- 60          if (no.esq == null) return no.dir;
- 61          no.esq = removerMenor(no.esq);
- 62          return balancear(no);
- 63      }
+ 40      @Override
+ 41      public boolean remover(T valor) {
+ 42          return remover(valor, false);
+ 43      }
+ 44  
+ 45      /** Remove uma ocorrencia da mesma instancia, inclusive entre chaves iguais. */
+ 46      @Override
+ 47      public boolean removerReferencia(T valor) {
+ 48          return remover(valor, true);
+ 49      }
+ 50  
+ 51      private boolean remover(T valor, boolean porReferencia) {
+ 52          if (valor == null) return false;
+ 53          Remocao resultado = new Remocao();
+ 54          raiz = remover(raiz, valor, porReferencia, resultado);
+ 55          return resultado.realizada;
+ 56      }
+ 57  
+ 58      private No<T> remover(No<T> no, T valor, boolean porReferencia, Remocao resultado) {
+ 59          if (no == null) return null;
+ 60          int comparacao = comparador.compare(valor, no.valor);
+ 61          if (comparacao < 0) {
+ 62              no.esq = remover(no.esq, valor, porReferencia, resultado);
+ 63          } else if (comparacao > 0) {
+ 64              no.dir = remover(no.dir, valor, porReferencia, resultado);
+ 65          } else if (porReferencia && no.valor != valor) {
+ 66              // Rotacoes podem deixar chaves iguais nos dois lados do no.
+ 67              no.esq = remover(no.esq, valor, true, resultado);
+ 68              if (!resultado.realizada) {
+ 69                  no.dir = remover(no.dir, valor, true, resultado);
+ 70              }
+ 71          } else {
+ 72              resultado.realizada = true;
+ 73              if (no.esq == null) return no.dir;
+ 74              if (no.dir == null) return no.esq;
+ 75              No<T> sucessor = no.dir;
+ 76              while (sucessor.esq != null) sucessor = sucessor.esq;
+ 77              no.valor = sucessor.valor;
+ 78              no.dir = removerMenor(no.dir);
+ 79          }
+ 80          return resultado.realizada ? balancear(no) : no;
+ 81      }
+ 82  
+ 83      private No<T> removerMenor(No<T> no) {
+ 84          if (no.esq == null) return no.dir;
+ 85          no.esq = removerMenor(no.esq);
+ 86          return balancear(no);
+ 87      }
 ```
 
 
@@ -682,27 +739,27 @@ Pior caso de adicionar: inserir uma chave que desça até o nível mais profundo
 
 | --- | --- |
 
-| 23-36 | Os dois métodos públicos delegam ao mesmo auxiliar: validação, zera o indicador removido, uma chamada e atribuição da nova raiz. Θ(1). |
+| 40-56 | remover e removerReferencia delegam ao mesmo auxiliar: validação, criação do objeto Remocao, uma chamada e atribuição da nova raiz. Θ(1). |
 
-| 38-39 | Por chamada: um teste de nulo e uma comparação. |
+| 59-60 | Por chamada: um teste de nulo e uma comparação. |
 
-| 40-43 | Nó encontrado com zero ou um filho: retorna o filho, Θ(1). |
+| 61-64 | Chave menor ou maior: desce para apenas um dos filhos. Ao todo d ≤ h + 1 chamadas. |
 
-| 44-47 | Dois filhos: o laço desce s nós até o sucessor (menor da direita), copia o valor e chama removerMenor, que refaz os mesmos s passos. |
+| 72-74 | Nó encontrado com zero ou um filho: marca a remoção e retorna o filho, Θ(1). |
 
-| 52-55 | Chave diferente: desce para apenas um dos filhos. Ao todo d ≤ h + 1 chamadas. |
+| 75-78 | Dois filhos: o laço desce s nós até o sucessor (menor da direita), copia o valor e chama removerMenor, que refaz os mesmos s passos. |
 
-| 57 e 62 | balancear em cada nível no retorno: Θ(1) cada, mas pode haver rotação em vários níveis. |
+| 80 | Só rebalanceia se houve remoção: Θ(1) por nível, podendo haver rotação em vários níveis. |
 
-| 59-63 | removerMenor: s chamadas, cada uma com balancear Θ(1). |
+| 83-87 | removerMenor: s chamadas, cada uma com balancear Θ(1). |
 
-| 48-51 | Só em removerReferencia, quando a chave é igual mas a instância é outra (nomes repetidos). Ver abaixo. |
+| 65-70 | Só em removerReferencia, quando a chave é igual mas a instância é outra (nomes repetidos). Ver abaixo. |
 
 
 
 T = c₁·d + c₂·s, com d + s ≤ h + 1, pois o sucessor está no prolongamento do mesmo caminho. Logo remover custa Θ(h) = Θ(log n). Pior caso: remover a raiz cujo sucessor está no nível mais profundo, ou uma folha do nível mais profundo, em uma árvore de Fibonacci, em que a remoção encurta a subárvore e exige rotação em vários níveis até a raiz. São até O(log n) rotações, cada uma Θ(1), mantendo o total em Θ(log n).
 
-Chaves iguais: na árvore binária comum, iguais sempre vão para a direita. Na AVL, uma rotação pode levar uma chave igual para a esquerda, e a invariante passa a ser esquerda ≤ nó ≤ direita. Por isso, ao remover por referência um contato cujo nome se repete, as linhas 48-51 procuram a instância nos dois lados da região de nomes iguais. Com r contatos de mesmo nome, o custo é O(log n + r). No índice por telefone, sem repetições, esse ramo nunca é executado. O pior caso teórico seria todos os n contatos com o mesmo nome, Θ(n).
+Chaves iguais: na árvore binária comum, iguais sempre vão para a direita. Na AVL, uma rotação pode levar uma chave igual para a esquerda. Por isso, ao remover por referência um contato cujo nome se repete, as linhas 65-70 procuram a instância nos dois lados da região de nomes iguais. Com r contatos de mesmo nome, o custo é O(log n + r). No índice por telefone, sem repetições, esse ramo nunca é executado. O pior caso teórico seria todos os n contatos com o mesmo nome, Θ(n).
 
 
 ## 4.4 Síntese
@@ -738,7 +795,7 @@ A AVL troca um custo constante extra por inserção e remoção (alturas e rota�
 
 BenchmarkAVL usa os mesmos arquivos degenerados da seção 3, com telefones em ordem crescente, e faz as mesmas observações: carga dos dois índices, busca por telefone da folha mais distante da raiz, busca por nome do mesmo contato e remoção por telefone. Para a comparação ser justa, a árvore binária comum foi medida de novo, na mesma execução e na mesma máquina, alternando a ordem das estruturas a cada repetição. Coleta em 26/10/2026: AMD Ryzen 5 5500X3D 6-Core Processor, 15,9 GB de RAM, Java Temurin 21.0.12.1, heap -Xms256m -Xmx1024m, três repetições e aquecimento das duas estruturas. As tabelas mostram medianas em milissegundos.
 
-Antes de medir, o programa confirma n nós em cada índice, a altura esperada e, para a AVL, o fator de balanceamento de todos os nós. Com entrada crescente e n = 2^k - 1, a AVL termina perfeitamente balanceada: altura k - 1, a mesma da entrada por medianas. O alvo escolhido por folhaMaisDistante está, portanto, a log₂(n + 1) - 1 arestas da raiz, contra n - 1 na binária comum.
+Antes de medir, o programa confirma n nós em cada índice, a altura esperada e a profundidade do alvo. Com entrada crescente e n = 2^k - 1, a AVL termina perfeitamente balanceada: altura k - 1, a mesma da entrada por medianas. O alvo escolhido por folhaMaisDistante está, portanto, a log₂(n + 1) - 1 arestas da raiz, contra n - 1 na binária comum.
 
 | n | Altura AVL | Altura binária | Nós visitados: AVL / binária |
 
@@ -764,13 +821,13 @@ Tabela 4. Leitura e montagem dos dois índices com telefones crescentes.
 
 | --- | --- | --- | --- |
 
-| 2.047 | 7,323 | 47,753 | 6,5x |
+| 2.047 | 6,375 | 41,659 | 6,5x |
 
-| 4.095 | 3,831 | 182,926 | 47,8x |
+| 4.095 | 2,669 | 162,076 | 60,7x |
 
-| 8.191 | 8,360 | 781,121 | 93,4x |
+| 8.191 | 5,166 | 661,900 | 128,1x |
 
-| 16.383 | 19,227 | 3.635,302 | 189,1x |
+| 16.383 | 9,197 | 2.675,425 | 290,9x |
 
 
 
@@ -780,21 +837,21 @@ Tabela 5. Operações no mesmo contato, na folha mais distante da raiz.
 
 | --- | --- | --- | --- | --- |
 
-| AVL | 2.047 | 0,0011 | 0,0006 | 0,0038 |
+| AVL | 2.047 | 0,0010 | 0,0005 | 0,0030 |
 
-| AVL | 4.095 | 0,0009 | 0,0004 | 0,0016 |
+| AVL | 4.095 | 0,0006 | 0,0004 | 0,0013 |
 
-| AVL | 8.191 | 0,0013 | 0,0007 | 0,0023 |
+| AVL | 8.191 | 0,0010 | 0,0006 | 0,0029 |
 
-| AVL | 16.383 | 0,0013 | 0,0007 | 0,0037 |
+| AVL | 16.383 | 0,0007 | 0,0007 | 0,0033 |
 
-| Binária | 2.047 | 0,0486 | 0,0356 | 0,1003 |
+| Binária | 2.047 | 0,0535 | 0,0503 | 0,1003 |
 
-| Binária | 4.095 | 0,0788 | 0,0539 | 0,1227 |
+| Binária | 4.095 | 0,0467 | 0,0542 | 0,0896 |
 
-| Binária | 8.191 | 0,1580 | 0,1505 | 0,1657 |
+| Binária | 8.191 | 0,1405 | 0,1491 | 0,0982 |
 
-| Binária | 16.383 | 0,2331 | 0,2574 | 0,2523 |
+| Binária | 16.383 | 0,2722 | 0,2973 | 0,2170 |
 
 
 
@@ -806,9 +863,9 @@ Tabela 5. Operações no mesmo contato, na folha mais distante da raiz.
 ## 5.3 Interpretação e comparação
 
 
-Carga. Ao dobrar n, a carga da binária comum cresceu 3,83x, 4,27x, 4,65x, perto do fator 4 esperado para Θ(n²). A carga da AVL ficou entre 3,83 e 19,23 ms. O primeiro tamanho (2.047) ficou acima do segundo, efeito da compilação JIT e da coleta de lixo no início da execução; a partir de 4.095, os valores crescem pouco mais que o dobro, como previsto para Θ(n log n). Com 16.383 contatos, a binária levou 3.635,3 ms e a AVL 19,2 ms: 189 vezes menos. O custo extra das rotações é pequeno diante das 16.382 comparações que a última inserção faz na cadeia degenerada.
+Carga. Ao dobrar n, a carga da binária comum cresceu 3,89x, 4,08x, 4,04x, perto do fator 4 esperado para Θ(n²). A carga da AVL ficou entre 2,67 e 9,20 ms. O primeiro tamanho (2.047) ficou acima do segundo, efeito da compilação JIT e da coleta de lixo no início da execução; a partir de 4.095, os valores crescem pouco mais que o dobro, como previsto para Θ(n log n). Com 16.383 contatos, a binária levou 2.675,4 ms e a AVL 9,2 ms: 291 vezes menos. O custo extra das rotações é pequeno diante das 16.382 comparações que a última inserção faz na cadeia degenerada.
 
-Buscas e remoção. Na AVL, as medianas ficaram em torno de um microssegundo (0,001 ms) em todos os tamanhos, valores próximos da resolução de System.nanoTime e praticamente constantes, o que é coerente com 11 a 14 nós visitados. Na binária, os tempos crescem com n, de 0,0486 a 0,2331 ms na busca por telefone, acompanhando o caminho de n nós. A remoção da AVL inclui as rotações na volta da recursão e ainda assim ficou dezenas de vezes abaixo da binária.
+Buscas e remoção. Na AVL, as medianas ficaram em torno de um microssegundo (0,001 ms) em todos os tamanhos, valores próximos da resolução de System.nanoTime e praticamente constantes, o que é coerente com 11 a 14 nós visitados. Na binária, os tempos crescem com n, de 0,0535 a 0,2722 ms na busca por telefone, acompanhando o caminho de n nós. A remoção da AVL inclui as rotações na volta da recursão e ainda assim ficou dezenas de vezes abaixo da binária.
 
 Comparação com a seção 3. Os tempos da AVL nos arquivos crescentes ficaram na mesma faixa da árvore binária perfeita da seção 3 (entrada por medianas), porque as duas têm a mesma altura. A diferença é que a binária só é perfeita quando a ordem de entrada é favorável; a AVL garante a altura logarítmica para qualquer ordem. As medidas da seção 3 foram feitas em outra máquina, por isso a comparação entre seções considera as ordens de grandeza, e não os valores exatos. Em relação às listas do trabalho 1, a busca e a remoção na AVL deixam de depender linearmente de n.
 

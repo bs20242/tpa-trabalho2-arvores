@@ -2,8 +2,8 @@ package app;
 
 import colecao.IColecao;
 import colecao.ListaEncadeada;
-import arvorebinaria.ArvoreAVL;
 import arvorebinaria.ArvoreBinaria;
+import arvorebinaria.ArvoreAVL;
 import dominio.Contato;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,13 +19,11 @@ public class CadastroContatos {
     private final Set<String> telefones;
     private final int tipoEstrutura; 
 
-    // SOLUÇÃO DA QUEBRA DE COMPATIBILIDADE: 
+    // true seleciona lista ordenada; false, lista nao ordenada.
     public CadastroContatos(boolean ordenada) {
         this(ordenada ? 2 : 1);
     }
 
-    // SOLUÇÃO DO ERRO DO FINAL:
-    // A validação é feita de forma limpa na atribuição.
     public CadastroContatos(int tipoEscolhido) {
         this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 4) ? tipoEscolhido : 1;
         this.telefones = new HashSet<>();
@@ -44,8 +42,8 @@ public class CadastroContatos {
                 porTelefone = new ArvoreBinaria<>(new Contato.ComparadorPorTelefone());
                 break;
             case 4:
-                porNome = new ArvoreAVL<>(new Contato.ComparadorPorNome());
-                porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
+                this.porNome = new ArvoreAVL<>(new Contato.ComparadorPorNome());
+                this.porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
                 break;
             default:
                 porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), false);
@@ -60,12 +58,11 @@ public class CadastroContatos {
     public boolean removerPorNome(Contato contato) {
         boolean r = false;
         
-        // SOLUÇÃO DA REMOÇÃO INCOMPLETA DA ÁRVORE:
+        // Remove o mesmo contato, mesmo quando ha nomes iguais.
         if (tipoEstrutura == 1 || tipoEstrutura == 2) {
             r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
         } else if (tipoEstrutura == 3 || tipoEstrutura == 4) {
-            // ArvoreAVL herda de ArvoreBinaria e sobrescreve removerReferencia com balanceamento.
-            r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato);
+            r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato); 
         }
 
         if (r && contato != null && contato.getTelefone() != null) {

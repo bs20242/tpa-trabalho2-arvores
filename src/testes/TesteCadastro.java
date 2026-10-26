@@ -1,6 +1,7 @@
 package testes;
 
 import app.CadastroContatos;
+import arvorebinaria.ArvoreAVL;
 import colecao.ListaEncadeada;
 import dominio.Contato;
 import java.nio.file.Files;
@@ -16,6 +17,10 @@ public class TesteCadastro {
     }
 
     public static void main(String[] args) throws Exception {
+        CadastroContatos cadastroAVL = new CadastroContatos(4);
+        verificar(cadastroAVL.porNome() instanceof ArvoreAVL<?>
+                && cadastroAVL.porTelefone() instanceof ArvoreAVL<?>, "Opcao 4 deve criar duas arvores AVL");
+
         for (boolean ordenada : new boolean[] {false, true}) {
             testarSequencias(ordenada);
             CadastroContatos cadastro = new CadastroContatos(ordenada);

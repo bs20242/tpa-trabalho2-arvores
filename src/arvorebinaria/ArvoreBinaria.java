@@ -3,11 +3,11 @@ import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Objects;
+
 public class ArvoreBinaria<T> extends ArvoreBinariaBase<T> {
     protected static class No<T> {
         T valor;
         No<T> esq, dir;
-        int altura; // mantida somente pela ArvoreAVL
         No(T valor) { this.valor = valor; }
     }
     protected No<T> raiz;

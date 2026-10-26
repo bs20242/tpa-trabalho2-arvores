@@ -1,6 +1,5 @@
 package testes;
 import app.CadastroContatos;
-import arvorebinaria.ArvoreAVL;
 import arvorebinaria.ArvoreBinaria;
 import dominio.Contato;
 import java.nio.file.*;
@@ -34,9 +33,9 @@ public class BenchmarkAVL {
                 ArvoreBinaria<Contato> nome=(ArvoreBinaria<Contato>)c.porNome();
                 Contato alvo=tel.folhaMaisDistante();
                 int ht=tel.altura(),hn=nome.altura(),dt=tel.profundidade(alvo),dn=nome.profundidade(alvo);
+                // Com n = 2^k - 1 chaves crescentes, a AVL termina perfeita: altura k - 1.
                 int alturaEsperada=tipo==4?31-Integer.numberOfLeadingZeros(n):n-1;
-                boolean balanceada=tipo==3 || (((ArvoreAVL<Contato>)tel).estaBalanceada() && ((ArvoreAVL<Contato>)nome).estaBalanceada());
-                if(lidos!=n || tel.quantidadeNos()!=n || nome.quantidadeNos()!=n || ht!=alturaEsperada || hn!=ht || dt!=ht || dn!=ht || !balanceada)throw new AssertionError("Carga ou topologia incorreta");
+                if(lidos!=n || tel.quantidadeNos()!=n || nome.quantidadeNos()!=n || ht!=alturaEsperada || hn!=ht || dt!=ht || dn!=ht)throw new AssertionError("Carga ou topologia incorreta");
                 Contato chaveTel=new Contato("",alvo.getTelefone()),chaveNome=new Contato(alvo.getNome(),"");
                 inicio=System.nanoTime(); Contato buscaTel=tel.pesquisar(chaveTel); long bt=System.nanoTime()-inicio;
                 inicio=System.nanoTime(); Contato buscaNome=nome.pesquisar(chaveNome); long bn=System.nanoTime()-inicio;

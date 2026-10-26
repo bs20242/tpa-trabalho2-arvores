@@ -1,8 +1,21 @@
 package arvorebinaria;
+
 import java.util.Comparator;
 
+/** Arvore de busca que mantem a diferenca de alturas entre -1 e 1. */
 public class ArvoreAVL<T> extends ArvoreBinaria<T> {
-    private boolean removido;
+    private static class NoAVL<T> extends No<T> {
+        int altura;
+
+        NoAVL(T valor) {
+            super(valor);
+        }
+    }
+
+    private static class Remocao {
+        boolean realizada;
+    }
+
     public ArvoreAVL(Comparator<T> comparador) {
         super(comparador);
     }
@@ -13,86 +26,100 @@ public class ArvoreAVL<T> extends ArvoreBinaria<T> {
         raiz = adicionar(raiz, valor);
         return true;
     }
+
     private No<T> adicionar(No<T> no, T valor) {
-        if (no == null) return new No<>(valor);
-        if (comparador.compare(valor, no.valor) < 0) no.esq = adicionar(no.esq, valor);
-        else no.dir = adicionar(no.dir, valor);
+        if (no == null) return new NoAVL<>(valor);
+        if (comparador.compare(valor, no.valor) < 0) {
+            no.esq = adicionar(no.esq, valor);
+        } else {
+            no.dir = adicionar(no.dir, valor);
+        }
         return balancear(no);
     }
 
     @Override
     public boolean remover(T valor) {
-        return removerAVL(valor, false);
+        return remover(valor, false);
     }
+
+    /** Remove uma ocorrencia da mesma instancia, inclusive entre chaves iguais. */
     @Override
     public boolean removerReferencia(T valor) {
-        return removerAVL(valor, true);
+        return remover(valor, true);
     }
-    private boolean removerAVL(T valor, boolean referencia) {
+
+    private boolean remover(T valor, boolean porReferencia) {
         if (valor == null) return false;
-        removido = false;
-        raiz = remover(raiz, valor, referencia);
-        return removido;
+        Remocao resultado = new Remocao();
+        raiz = remover(raiz, valor, porReferencia, resultado);
+        return resultado.realizada;
     }
-    private No<T> remover(No<T> no, T valor, boolean referencia) {
+
+    private No<T> remover(No<T> no, T valor, boolean porReferencia, Remocao resultado) {
         if (no == null) return null;
-        int c = comparador.compare(valor, no.valor);
-        if (c == 0 && (!referencia || no.valor == valor)) {
-            removido = true;
+        int comparacao = comparador.compare(valor, no.valor);
+        if (comparacao < 0) {
+            no.esq = remover(no.esq, valor, porReferencia, resultado);
+        } else if (comparacao > 0) {
+            no.dir = remover(no.dir, valor, porReferencia, resultado);
+        } else if (porReferencia && no.valor != valor) {
+            // Rotacoes podem deixar chaves iguais nos dois lados do no.
+            no.esq = remover(no.esq, valor, true, resultado);
+            if (!resultado.realizada) {
+                no.dir = remover(no.dir, valor, true, resultado);
+            }
+        } else {
+            resultado.realizada = true;
             if (no.esq == null) return no.dir;
             if (no.dir == null) return no.esq;
             No<T> sucessor = no.dir;
             while (sucessor.esq != null) sucessor = sucessor.esq;
             no.valor = sucessor.valor;
             no.dir = removerMenor(no.dir);
-        } else if (c == 0) {
-            // Rotacoes podem levar chaves iguais para a esquerda: procura a instancia nos dois lados.
-            no.esq = remover(no.esq, valor, true);
-            if (!removido) no.dir = remover(no.dir, valor, true);
-        } else if (c < 0) {
-            no.esq = remover(no.esq, valor, referencia);
-        } else {
-            no.dir = remover(no.dir, valor, referencia);
         }
-        return balancear(no);
+        return resultado.realizada ? balancear(no) : no;
     }
+
     private No<T> removerMenor(No<T> no) {
         if (no.esq == null) return no.dir;
         no.esq = removerMenor(no.esq);
         return balancear(no);
     }
 
-    private int alturaNo(No<T> no) {
-        return no == null ? -1 : no.altura;
+    @Override
+    public int altura() {
+        return altura(raiz);
     }
+
+    private int altura(No<T> no) {
+        return no == null ? -1 : ((NoAVL<T>) no).altura;
+    }
+
     private void atualizarAltura(No<T> no) {
-        no.altura = 1 + Math.max(alturaNo(no.esq), alturaNo(no.dir));
+        ((NoAVL<T>) no).altura = 1 + Math.max(altura(no.esq), altura(no.dir));
     }
+
+    // Convencao dos slides: altura da direita menos altura da esquerda.
     private int fatorBalanceamento(No<T> no) {
-        return alturaNo(no.esq) - alturaNo(no.dir);
+        return altura(no.dir) - altura(no.esq);
     }
+
     private No<T> balancear(No<T> no) {
         atualizarAltura(no);
-        int fb = fatorBalanceamento(no);
-        if (fb > 1) {
-            if (fatorBalanceamento(no.esq) < 0) no.esq = rotacionarEsquerda(no.esq);
-            return rotacionarDireita(no);
+        int fator = fatorBalanceamento(no);
+        // Filho com fator zero tambem usa rotacao simples na remocao.
+        if (fator > 1) {
+            if (fatorBalanceamento(no.dir) < 0) return rotacaoDireitaEsquerda(no);
+            return rotacaoEsquerda(no);
         }
-        if (fb < -1) {
-            if (fatorBalanceamento(no.dir) > 0) no.dir = rotacionarDireita(no.dir);
-            return rotacionarEsquerda(no);
+        if (fator < -1) {
+            if (fatorBalanceamento(no.esq) > 0) return rotacaoEsquerdaDireita(no);
+            return rotacaoDireita(no);
         }
         return no;
     }
-    private No<T> rotacionarDireita(No<T> no) {
-        No<T> novaRaiz = no.esq;
-        no.esq = novaRaiz.dir;
-        novaRaiz.dir = no;
-        atualizarAltura(no);
-        atualizarAltura(novaRaiz);
-        return novaRaiz;
-    }
-    private No<T> rotacionarEsquerda(No<T> no) {
+
+    private No<T> rotacaoEsquerda(No<T> no) {
         No<T> novaRaiz = no.dir;
         no.dir = novaRaiz.esq;
         novaRaiz.esq = no;
@@ -101,18 +128,22 @@ public class ArvoreAVL<T> extends ArvoreBinaria<T> {
         return novaRaiz;
     }
 
-    @Override
-    public int altura() {
-        return alturaNo(raiz);
+    private No<T> rotacaoDireita(No<T> no) {
+        No<T> novaRaiz = no.esq;
+        no.esq = novaRaiz.dir;
+        novaRaiz.dir = no;
+        atualizarAltura(no);
+        atualizarAltura(novaRaiz);
+        return novaRaiz;
     }
-    public boolean estaBalanceada() {
-        return verificarNo(raiz) != Integer.MIN_VALUE;
+
+    private No<T> rotacaoEsquerdaDireita(No<T> no) {
+        no.esq = rotacaoEsquerda(no.esq);
+        return rotacaoDireita(no);
     }
-    private int verificarNo(No<T> no) {
-        if (no == null) return -1;
-        int he = verificarNo(no.esq), hd = verificarNo(no.dir);
-        if (he == Integer.MIN_VALUE || hd == Integer.MIN_VALUE || Math.abs(he - hd) > 1
-                || no.altura != 1 + Math.max(he, hd)) return Integer.MIN_VALUE;
-        return no.altura;
+
+    private No<T> rotacaoDireitaEsquerda(No<T> no) {
+        no.dir = rotacaoDireita(no.dir);
+        return rotacaoEsquerda(no);
     }
 }

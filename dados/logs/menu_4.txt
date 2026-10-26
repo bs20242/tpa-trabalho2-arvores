@@ -44,7 +44,7 @@ Escolha uma opcao: Nome do contato: Telefone do contato: Erro: Ja existe um cont
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o telefone do contato a remover: Contato (Ana - 222) excluido com sucesso.
-Tempo de remover na estrutura por telefone: 0,0084 ms
+Tempo de remover na estrutura por telefone: 0,4958 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -56,7 +56,7 @@ Tempo de remover na estrutura por telefone: 0,0084 ms
 7 - Sair
 Escolha uma opcao: Digite o nome a pesquisar: Contato encontrado: Ana - 111
 Telefone: 111
-Tempo gasto na busca: 0,0026 ms
+Tempo gasto na busca: 0,0019 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -88,7 +88,7 @@ Novo nome: Novo telefone: Dados alterados com sucesso para: Clara - 333
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o telefone a pesquisar: Contato nao existe.
-Tempo gasto na busca: 0,0031 ms
+Tempo gasto na busca: 0,0028 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -100,7 +100,7 @@ Tempo gasto na busca: 0,0031 ms
 7 - Sair
 Escolha uma opcao: Digite o telefone a pesquisar: Contato encontrado: Clara - 333
 Nome: Clara
-Tempo gasto na busca: 0,0023 ms
+Tempo gasto na busca: 0,0024 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -112,7 +112,7 @@ Tempo gasto na busca: 0,0023 ms
 7 - Sair
 Escolha uma opcao: Digite o nome a pesquisar: Contato encontrado: Bia - 222
 Telefone: 222
-Tempo gasto na busca: 0,0023 ms
+Tempo gasto na busca: 0,0017 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo

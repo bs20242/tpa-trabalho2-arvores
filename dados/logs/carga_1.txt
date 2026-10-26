@@ -14,7 +14,7 @@ Opcao:
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o caminho do arquivo (Enter para 'entrada.txt'): 2047 contatos carregados com sucesso!
-Tempo total de leitura e montagem das listas: 18,0648 ms
+Tempo total de leitura e montagem das listas: 19,8637 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -26,7 +26,7 @@ Tempo total de leitura e montagem das listas: 18,0648 ms
 7 - Sair
 Escolha uma opcao: Digite o telefone a pesquisar: Contato encontrado: Contato 002047 - 00000002047
 Nome: Contato 002047
-Tempo gasto na busca: 0,0159 ms
+Tempo gasto na busca: 0,0101 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
@@ -37,7 +37,7 @@ Tempo gasto na busca: 0,0159 ms
 6 - Alterar dados de contato
 7 - Sair
 Escolha uma opcao: Digite o telefone do contato a remover: Contato (Contato 002047 - 00000002047) excluido com sucesso.
-Tempo de remover na estrutura por telefone: 0,0047 ms
+Tempo de remover na estrutura por telefone: 0,0042 ms
 
 --- MENU PRINCIPAL ---
 1 - Carregar dados de arquivo
