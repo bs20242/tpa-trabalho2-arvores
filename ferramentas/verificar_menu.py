@@ -4,7 +4,7 @@ root=Path(__file__).resolve().parents[1]
 java=str(Path(os.environ['JAVA_HOME'])/'bin/java.exe') if os.environ.get('JAVA_HOME') else 'java'
 roteiro='2\nAna\n111\n2\nAna\n222\n2\nOutra\n111\n5\n222\n3\nAna\n2\nBia\n222\n6\nAna\nClara\n333\n4\n111\n4\n333\n3\nBia\n7\n'
 logs=root/'dados/logs'; logs.mkdir(exist_ok=True)
-for tipo in [1,2,3]:
+for tipo in [1,2,3,4]:
     p=subprocess.run([java,'-cp','bin','app.ProgramaContatos'],input=str(tipo)+'\n'+roteiro,text=True,capture_output=True,cwd=root)
     assert p.returncode==0,p.stderr
     for trecho in ['Contato encontrado: Ana - 111','Contato encontrado: Clara - 333','Contato encontrado: Bia - 222','Quantidade total atual de contatos: 2','Ja existe um contato cadastrado','Contato nao existe']:

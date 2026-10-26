@@ -2,6 +2,7 @@ package app;
 
 import colecao.IColecao;
 import colecao.ListaEncadeada;
+import arvorebinaria.ArvoreAVL;
 import arvorebinaria.ArvoreBinaria;
 import dominio.Contato;
 import java.io.BufferedReader;
@@ -26,7 +27,7 @@ public class CadastroContatos {
     // SOLUÇÃO DO ERRO DO FINAL:
     // A validação é feita de forma limpa na atribuição.
     public CadastroContatos(int tipoEscolhido) {
-        this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 3) ? tipoEscolhido : 1;
+        this.tipoEstrutura = (tipoEscolhido >= 1 && tipoEscolhido <= 4) ? tipoEscolhido : 1;
         this.telefones = new HashSet<>();
 
         switch (this.tipoEstrutura) {
@@ -41,6 +42,10 @@ public class CadastroContatos {
             case 3:
                 porNome = new ArvoreBinaria<>(new Contato.ComparadorPorNome());
                 porTelefone = new ArvoreBinaria<>(new Contato.ComparadorPorTelefone());
+                break;
+            case 4:
+                porNome = new ArvoreAVL<>(new Contato.ComparadorPorNome());
+                porTelefone = new ArvoreAVL<>(new Contato.ComparadorPorTelefone());
                 break;
             default:
                 porNome = new ListaEncadeada<>(new Contato.ComparadorPorNome(), false);
@@ -58,8 +63,9 @@ public class CadastroContatos {
         // SOLUÇÃO DA REMOÇÃO INCOMPLETA DA ÁRVORE:
         if (tipoEstrutura == 1 || tipoEstrutura == 2) {
             r = ((ListaEncadeada<Contato>) porNome).removerReferencia(contato);
-        } else if (tipoEstrutura == 3) {
-            r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato); 
+        } else if (tipoEstrutura == 3 || tipoEstrutura == 4) {
+            // ArvoreAVL herda de ArvoreBinaria e sobrescreve removerReferencia com balanceamento.
+            r = ((ArvoreBinaria<Contato>) porNome).removerReferencia(contato);
         }
 
         if (r && contato != null && contato.getTelefone() != null) {

@@ -1,0 +1,13 @@
+{
+  "fuso": "America/Sao_Paulo",
+  "repeticoes": 3,
+  "data": "2026-10-26",
+  "arquivos": "degenerada_*.txt (telefones em ordem crescente)",
+  "estruturas": "binaria (opcao 3) e avl (opcao 4) medidas na mesma execucao, ordem alternada a cada repeticao",
+  "aquecimento": "10 cargas de degenerada_2047.txt por estrutura, com buscas e remocao fora dos intervalos medidos",
+  "heap": "-Xms256m -Xmx1024m",
+  "processador": "AMD Ryzen 5 5500X3D 6-Core Processor",
+  "java": "Temurin 21.0.12.1",
+  "ramGB": 15.9,
+  "sistema": "Windows 11 Pro"
+}

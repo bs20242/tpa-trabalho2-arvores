@@ -2,7 +2,7 @@
 
 Técnicas de Programação Avançada - IFES, Campus Serra.
 
-O projeto contém a biblioteca de árvores binárias, o aplicativo de contatos com três estruturas e os itens 3, 4 e 5: relatório parcial, análise matemática e experimentos de árvores sem balanceamento automático.
+O projeto contém a biblioteca de árvores binárias e AVL, o aplicativo de contatos com quatro estruturas e o relatório completo (seções 1 a 6): análise matemática, experimentos com árvores degeneradas, perfeitas e AVL, e a pesquisa sobre árvores na biblioteca padrão de Java.
 
 Grupo: Bernardo Simão Rosa, Matheus Abreu e Levi Monteiro.
 
@@ -16,7 +16,7 @@ Os arquivos de listas e contatos foram trazidos do [repositório entregue no tra
 - `src/app/ProgramaContatos.java`: aplicativo original de contatos.
 - `src/testes/TesteLista.java`, `TesteCadastro.java`, `GeradorDadosContatos.java` e `BenchmarkListas.java`: testes e ferramentas do trabalho anterior.
 
-O aplicativo permite escolher entre lista não ordenada (1), lista ordenada (2) e árvore binária (3). `CadastroContatos` cria os dois índices na estrutura escolhida e remove por referência no índice de nomes, preservando outros contatos com nomes iguais. O construtor com `boolean` continua disponível para os testes e o benchmark de listas do trabalho anterior.
+O aplicativo permite escolher entre lista não ordenada (1), lista ordenada (2), árvore binária (3) e árvore AVL (4). `CadastroContatos` cria os dois índices na estrutura escolhida e remove por referência no índice de nomes, preservando outros contatos com nomes iguais. O construtor com `boolean` continua disponível para os testes e o benchmark de listas do trabalho anterior.
 
 Depois de compilar, o aplicativo original pode ser executado com:
 
@@ -45,7 +45,21 @@ A inserção e a busca seguem a regra apresentada nas aulas: menor à esquerda, 
 
 Na lista encadeada, `quantidadeNos()` retorna um campo atualizado pelas inserções e remoções, com custo O(1). Na árvore, esse método mantém o percurso O(n) descrito na tabela e no relatório.
 
-Os percursos usam laços, pilha ou fila explícita para funcionar também em árvores degeneradas profundas. A biblioteca não realiza rotações; a ordem da entrada determina o formato da árvore. Valores nulos não são inseridos. Chaves iguais são permitidas, e a busca ou remoção por chave atua sobre uma ocorrência.
+Os percursos usam laços, pilha ou fila explícita para funcionar também em árvores degeneradas profundas. `ArvoreBinaria` não realiza rotações; a ordem da entrada determina o formato da árvore.
+
+### Árvore AVL
+
+`ArvoreAVL<T>` herda de `ArvoreBinaria<T>` e sobrescreve `adicionar`, `remover`, `removerReferencia` e `altura`. Para isso, o nó e a raiz de `ArvoreBinaria` são `protected`, e o nó tem um campo `altura`, mantido apenas pela AVL.
+
+| Método | Comportamento |
+| --- | --- |
+| `adicionar` | Inserção recursiva; na volta de cada chamada, `balancear` atualiza a altura e aplica rotação simples (LL, RR) ou dupla (LR, RL). |
+| `remover` / `removerReferencia` | Mesmos três casos da árvore comum (sucessor = menor da direita), rebalanceando cada nível do caminho. |
+| `altura` | Lê a altura guardada na raiz, em O(1). |
+| `estaBalanceada` | Confere o fator de balanceamento e as alturas de todos os nós (usado nos testes e no benchmark). |
+| `pesquisar`, `quantidadeNos`, percursos | Herdados sem alteração. |
+
+Rotações podem levar uma chave igual para a subárvore esquerda. Por isso, ao remover por referência um contato cujo nome se repete, a AVL procura a instância nos dois lados da região de chaves iguais. Valores nulos não são inseridos. Chaves iguais são permitidas, e a busca ou remoção por chave atua sobre uma ocorrência.
 
 ## Organização
 
@@ -58,6 +72,7 @@ src/
   arvorebinaria/
     ArvoreBinariaBase.java
     ArvoreBinaria.java
+    ArvoreAVL.java
     NoArvore.java
   dominio/
     Contato.java
@@ -66,10 +81,19 @@ src/
     ProgramaContatos.java
   testes/
     TesteArvore.java
+    TesteAVL.java
     TesteLista.java
     TesteCadastro.java
     GeradorDadosContatos.java
     BenchmarkListas.java
+    GeradorDadosArvores.java
+    BenchmarkArvores.java
+    BenchmarkAVL.java
+ferramentas/
+  gerar_relatorio.py
+  verificar_menu.py
+relatorio/
+  Relatorio_Trabalho2_Arvores.pdf
 compilar.ps1
 README.md
 ```
@@ -83,6 +107,7 @@ README.md
 ```powershell
 .\compilar.ps1
 java -cp bin testes.TesteArvore
+java -cp bin testes.TesteAVL
 java -ea -cp bin testes.TesteLista
 java -ea -cp bin testes.TesteCadastro
 java -ea -cp bin testes.TesteContadorLista
@@ -96,7 +121,7 @@ javac -encoding UTF-8 -Xlint:all -d bin $fontes
 java -cp bin testes.TesteArvore
 ```
 
-Os testes verificam árvores vazias, percursos, remoção de folhas e raízes, remoção com um ou dois filhos, sucessor com filho, nomes iguais, comparadores diferentes e cadeia com 10.000 nós. Também comparam 10.000 operações aleatórias com um modelo de referência, incluindo chaves repetidas. Ao terminar, imprimem `OK` com a quantidade de verificações.
+Os testes verificam árvores vazias, percursos, remoção de folhas e raízes, remoção com um ou dois filhos, sucessor com filho, nomes iguais, comparadores diferentes e cadeia com 10.000 nós. Também comparam 10.000 operações aleatórias com um modelo de referência, incluindo chaves repetidas. `TesteAVL` verifica os quatro casos de rotação, o rebalanceamento após remoções, a entrada crescente de 16.383 chaves (altura 13), nomes iguais com `removerReferencia` e 20.000 operações aleatórias comparadas com `TreeMap`, conferindo a invariante AVL e o limite de altura. Ao terminar, os testes imprimem `OK` com a quantidade de verificações.
 
 ## Usar a biblioteca no aplicativo
 
@@ -117,4 +142,13 @@ Para os experimentos, `folhaMaisDistante()` retorna uma folha no nível mais pro
 
 ## Relatório e experimentos
 
-O relatório está em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`, com texto editável em `docs/Relatorio_Parcial.md`. `GeradorDadosArvores` gera os oito arquivos exigidos para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário com medições documentadas na pasta `dados`.
+O relatório completo está em `relatorio/Relatorio_Trabalho2_Arvores.pdf` (seções 1 a 6), com texto em `docs/Relatorio.md`; o relatório parcial entregue antes continua em `relatorio/Relatorio_Parcial_Trabalho2_Arvores.pdf`.
+
+`GeradorDadosArvores` gera os oito arquivos exigidos para os quatro tamanhos e os dois formatos; `BenchmarkArvores` coleta três repetições por cenário (`dados/resultados_arvores.csv`). `BenchmarkAVL` usa os arquivos com telefones crescentes e mede a árvore binária comum e a AVL na mesma execução (`dados/resultados_avl.csv`, ambiente em `dados/ambiente_avl.json`).
+
+```powershell
+java -Xms256m -Xmx1024m -cp bin testes.BenchmarkAVL
+pip install -r ferramentas/requirements.txt
+python ferramentas/verificar_menu.py
+python ferramentas/gerar_relatorio.py
+```

@@ -18,12 +18,13 @@ public class ProgramaContatos {
         System.out.println("1 - Lista Nao-Ordenada");
         System.out.println("2 - Lista Ordenada");
         System.out.println("3 - Arvore Binaria");
+        System.out.println("4 - Arvore AVL");
         System.out.print("Opcao: ");
         
         int escolhaEstrutura = 1; // Padrão de segurança
         try {
             escolhaEstrutura = Integer.parseInt(scanner.nextLine().trim());
-            if (escolhaEstrutura < 1 || escolhaEstrutura > 3) {
+            if (escolhaEstrutura < 1 || escolhaEstrutura > 4) {
                 System.out.println("Opcao invalida. Usando Lista Nao-Ordenada por padrao.");
                 escolhaEstrutura = 1;
             }
